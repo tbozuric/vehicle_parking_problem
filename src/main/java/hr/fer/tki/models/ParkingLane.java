@@ -12,10 +12,9 @@ public class ParkingLane {
     private List<Vehicle> parkedVehicles;
 
 
-    public ParkingLane(int lengthOfLane,  List<ParkingLane> blockingParkingLanes) {
+    public ParkingLane(int lengthOfLane) {
         this.id = counter++;
         this.lengthOfLane = lengthOfLane;
-        this.blockingParkingLanes = blockingParkingLanes;
     }
 
 
