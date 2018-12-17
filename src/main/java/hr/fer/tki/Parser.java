@@ -1,4 +1,4 @@
 package hr.fer.tki;
 
-public class Parser {
+public class giParser {
 }
