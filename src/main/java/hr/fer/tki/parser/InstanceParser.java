@@ -52,6 +52,7 @@ public class InstanceParser {
 
         int[] typesOfSchedule = parseIntArray(lines.get(currentLine++));
         assertArrayLength(typesOfSchedule.length, numberOfVehicles);
+        assertBlankLine(lines, currentLine++);
 
         List<Vehicle> vehicles = new ArrayList<>();
         for (int i = 0; i < numberOfVehicles; i++) {
@@ -63,7 +64,8 @@ public class InstanceParser {
             parkingLanes.add(new ParkingLane(parkingLanesLengths[i]));
         }
 
-        while (currentLine < lines.size()) {
+        int size = lines.size();
+        while (currentLine < size) {
             String line = lines.get(currentLine++);
             if (line.trim().isEmpty())
                 break;
@@ -71,11 +73,10 @@ public class InstanceParser {
             int[] blockingIndices = parseIntArray(line);
             ParkingLane blocking = parkingLanes.get(blockingIndices[0]);
 
-            List<ParkingLane> blocked = new ArrayList<>();
             for (int i = 1; i < blockingIndices.length; i++) {
-                blocked.add(parkingLanes.get(blockingIndices[i]));
+                ParkingLane blocked = parkingLanes.get(blockingIndices[i]);
+                blocked.addBlockingParkingLane(blocking);
             }
-            blocking.setBlockingParkingLanes(blocked);
         }
 
         return new Garage(numberOfParkingLanes, numberOfVehicles, parkingLanes, vehicles, parkingPermissions);
