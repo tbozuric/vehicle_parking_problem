@@ -2,16 +2,18 @@ package hr.fer.tki.models;
 
 import java.util.List;
 
-public class VehicleStorage {
+public class Garage {
 
     private int numberOfParkingLanes;
     private int numberOfVehicles;
-    private List<ParkingLane>  parkingLanes;
+    private List<ParkingLane> parkingLanes;
+    private List<Vehicle> vehicles;
 
-    public VehicleStorage(int numberOfParkingLanes, int numberOfVehicles, List<ParkingLane> parkingLanes) {
+    public Garage(int numberOfParkingLanes, int numberOfVehicles, List<ParkingLane> parkingLanes, List<Vehicle> vehicles) {
         this.numberOfParkingLanes = numberOfParkingLanes;
         this.numberOfVehicles = numberOfVehicles;
         this.parkingLanes = parkingLanes;
+        this.vehicles = vehicles;
     }
 
     public int getNumberOfParkingLanes() {
@@ -36,5 +38,13 @@ public class VehicleStorage {
 
     public void setParkingLanes(List<ParkingLane> parkingLanes) {
         this.parkingLanes = parkingLanes;
+    }
+
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(List<Vehicle> vehicles) {
+        this.vehicles = vehicles;
     }
 }
