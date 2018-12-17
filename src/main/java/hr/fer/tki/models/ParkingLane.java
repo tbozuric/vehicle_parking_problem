@@ -1,5 +1,6 @@
 package hr.fer.tki.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingLane {
@@ -8,9 +9,11 @@ public class ParkingLane {
     private int id;
     private int lengthOfLane;
     private int vehicleSeries;
+    /**
+     * Parking lanes that block this one.
+     */
     private List<ParkingLane> blockingParkingLanes;
     private List<Vehicle> parkedVehicles;
-
 
     public ParkingLane(int lengthOfLane) {
         this.id = counter++;
@@ -44,6 +47,13 @@ public class ParkingLane {
 
     public void setBlockingParkingLanes(List<ParkingLane> blockingParkingLanes) {
         this.blockingParkingLanes = blockingParkingLanes;
+    }
+
+    public void addBlockingParkingLane(ParkingLane blockingParkingLane) {
+        if (blockingParkingLanes == null) {
+            blockingParkingLanes = new ArrayList<>();
+        }
+        blockingParkingLanes.add(blockingParkingLane);
     }
 
     public List<Vehicle> getParkedVehicles() {
