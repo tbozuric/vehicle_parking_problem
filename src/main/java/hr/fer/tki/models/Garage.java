@@ -7,6 +7,10 @@ public class Garage {
 
     private int numberOfParkingLanes;
     private int numberOfVehicles;
+    /**
+     * rows => vehicles
+     * columns => parkingLanes
+     */
     private Boolean[][] parkingPermissions;
     private List<ParkingLane> parkingLanes;
     private List<Vehicle> vehicles;
@@ -85,5 +89,4 @@ public class Garage {
 
         return indicesOfParkingLanes;
     }
-
 }
