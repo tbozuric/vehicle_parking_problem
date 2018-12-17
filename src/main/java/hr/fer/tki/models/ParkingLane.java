@@ -3,7 +3,7 @@ package hr.fer.tki.models;
 import java.util.List;
 
 public class ParkingLane {
-    private static int counter = 1;
+    private static int counter = 0;
 
     private int id;
     private int lengthOfLane;

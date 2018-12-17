@@ -1,7 +1,7 @@
 package hr.fer.tki.models;
 
 public class Vehicle {
-    private static int counter = 1;
+    private static int counter = 0;
 
     private int id;
     private int lengthOfVehicle;
