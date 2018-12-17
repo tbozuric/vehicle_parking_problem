@@ -1,19 +1,23 @@
 package hr.fer.tki.models;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Garage {
 
     private int numberOfParkingLanes;
     private int numberOfVehicles;
+    private Boolean[][] parkingPermissions;
     private List<ParkingLane> parkingLanes;
     private List<Vehicle> vehicles;
 
-    public Garage(int numberOfParkingLanes, int numberOfVehicles, List<ParkingLane> parkingLanes, List<Vehicle> vehicles) {
+    public Garage(int numberOfParkingLanes, int numberOfVehicles, List<ParkingLane> parkingLanes,
+                  List<Vehicle> vehicles, Boolean[][] parkingPermissions) {
         this.numberOfParkingLanes = numberOfParkingLanes;
         this.numberOfVehicles = numberOfVehicles;
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
+        this.parkingPermissions = parkingPermissions;
     }
 
     public int getNumberOfParkingLanes() {
@@ -47,4 +51,39 @@ public class Garage {
     public void setVehicles(List<Vehicle> vehicles) {
         this.vehicles = vehicles;
     }
+
+    public Boolean[][] getParkingPermissions() {
+        return parkingPermissions;
+    }
+
+    public void setParkingPermissions(Boolean[][] parkingPermissions) {
+        this.parkingPermissions = parkingPermissions;
+    }
+
+    private long getNumberOfParkingLinesWhereVehicleCanBeParked(int vehicleId) {
+        if (vehicleId < 0 || vehicleId >= parkingPermissions.length) {
+            throw new IllegalArgumentException("Vehicle id is not in the required range!");
+        }
+        return Arrays.stream(parkingPermissions[vehicleId]).filter(parkingLane -> parkingLane).count();
+    }
+
+    private int[] getIdsOfParkingLanesWhereCanBeParked(int vehicleId) {
+        if (vehicleId < 0 || vehicleId >= parkingPermissions.length) {
+            throw new IllegalArgumentException("Vehicle id is not in the required range!");
+        }
+
+        long numberOfParkingLanes = getNumberOfParkingLinesWhereVehicleCanBeParked(vehicleId);
+        int[] indicesOfParkingLanes = new int[(int) numberOfParkingLanes];
+        int size = parkingPermissions[vehicleId].length;
+
+        int k = 0;
+        for (int i = 0; i < size; i++) {
+            if (parkingPermissions[vehicleId][i]) {
+                indicesOfParkingLanes[k++] = i;
+            }
+        }
+
+        return indicesOfParkingLanes;
+    }
+
 }
