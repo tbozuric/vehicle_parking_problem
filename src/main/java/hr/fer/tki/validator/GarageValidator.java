@@ -38,8 +38,12 @@ public class GarageValidator {
         Set<Vehicle> distinctVehicles = new HashSet<>();
         int vehiclesCount = 0;
         for (ParkingLane lane : garage.getParkingLanes()) {
-            distinctVehicles.addAll(lane.getParkedVehicles());
-            vehiclesCount += lane.getParkedVehicles().size();
+            List<Vehicle> parkedVehicles = lane.getParkedVehicles();
+            if (parkedVehicles == null)
+                continue;
+
+            distinctVehicles.addAll(parkedVehicles);
+            vehiclesCount += parkedVehicles.size();
         }
 
         int actualVehiclesNumber = garage.getNumberOfVehicles();
@@ -105,7 +109,7 @@ public class GarageValidator {
                 int departureTime = vehicle.getDepartureTime();
 
                 if (time >= departureTime) {
-                    validatorResult.addViolatedRestriction(String.format("Departure time constraint broken in %d lane.", laneIndex);
+                    validatorResult.addViolatedRestriction(String.format("Departure time constraint broken in %d lane.", laneIndex));
                 }
                 time = departureTime;
             }
@@ -116,7 +120,7 @@ public class GarageValidator {
         for (int laneIndex = 0; laneIndex < garage.getNumberOfParkingLanes(); laneIndex++) {
             ParkingLane lane = garage.getParkingLanes().get(laneIndex);
             List<Vehicle> vehiclesInThisLane = lane.getParkedVehicles();
-            if (vehiclesInThisLane.isEmpty())
+            if (vehiclesInThisLane.isEmpty() || lane.getBlockingParkingLanes() == null)
                 continue;
 
             Vehicle firstInThis = vehiclesInThisLane.get(0);
