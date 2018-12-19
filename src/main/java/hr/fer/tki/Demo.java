@@ -2,10 +2,7 @@ package hr.fer.tki;
 
 import hr.fer.tki.greedy.GreedyParkingAlgorithm;
 import hr.fer.tki.models.Garage;
-import hr.fer.tki.models.Vehicle;
 import hr.fer.tki.parser.InstanceParser;
-
-import java.util.List;
 
 public class Demo {
 
