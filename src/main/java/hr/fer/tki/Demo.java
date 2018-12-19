@@ -3,6 +3,7 @@ package hr.fer.tki;
 import hr.fer.tki.greedy.GreedyParkingAlgorithm;
 import hr.fer.tki.models.Garage;
 import hr.fer.tki.parser.InstanceParser;
+import hr.fer.tki.sketch.GarageDrawer;
 import hr.fer.tki.validator.GarageValidator;
 import hr.fer.tki.validator.ValidatorResult;
 
@@ -18,5 +19,7 @@ public class Demo {
             System.out.println(restriction);
         }
         System.out.println(validatorResult.isValid());
+
+        GarageDrawer.drawGarage(garage);
     }
 }
