@@ -121,6 +121,7 @@ public class ParkingLane implements Comparable<ParkingLane> {
     public int compareTo(ParkingLane other) {
         return Comparator.comparingInt(ParkingLane::getNumberOfBlockingLanes)
                 .thenComparingDouble(ParkingLane::getAvailableSpace)
+                .thenComparingInt(ParkingLane::getId)
                 .compare(this, other);
     }
 
