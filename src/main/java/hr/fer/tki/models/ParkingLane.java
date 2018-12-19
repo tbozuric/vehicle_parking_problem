@@ -18,6 +18,9 @@ public class ParkingLane {
     public ParkingLane(int lengthOfLane) {
         this.id = counter++;
         this.lengthOfLane = lengthOfLane;
+
+        blockingParkingLanes = new ArrayList<>();
+        parkedVehicles = new ArrayList<>();
     }
 
 
