@@ -134,7 +134,7 @@ public class GarageValidator {
                 Vehicle lastInBlocking = vehiclesInBlockingLanes.get(vehiclesInBlockingLanes.size() - 1);
                 if (lastInBlocking.getDepartureTime() >= firstInThis.getDepartureTime()) {
                     validatorResult.addViolatedRestriction(
-                            String.format("Lane %d is blocked, but does not breaks the time rule.", laneIndex));
+                            String.format("Lane %d is blocked, but does not break the time rule.", laneIndex));
                 }
             }
         }
