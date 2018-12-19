@@ -64,19 +64,19 @@ public class Garage {
         this.parkingPermissions = parkingPermissions;
     }
 
-    private long getNumberOfParkingLinesWhereVehicleCanBeParked(int vehicleId) {
+    public int getNumberOfParkingLinesWhereCanBeParked(int vehicleId) {
         if (vehicleId < 0 || vehicleId >= parkingPermissions.length) {
             throw new IllegalArgumentException("Vehicle id is not in the required range!");
         }
-        return Arrays.stream(parkingPermissions[vehicleId]).filter(parkingLane -> parkingLane).count();
+        return (int) Arrays.stream(parkingPermissions[vehicleId]).filter(parkingLane -> parkingLane).count();
     }
 
-    private int[] getIdsOfParkingLanesWhereCanBeParked(int vehicleId) {
+    public int[] getIdsOfParkingLanesWhereCanBeParked(int vehicleId) {
         if (vehicleId < 0 || vehicleId >= parkingPermissions.length) {
             throw new IllegalArgumentException("Vehicle id is not in the required range!");
         }
 
-        long numberOfParkingLanes = getNumberOfParkingLinesWhereVehicleCanBeParked(vehicleId);
+        long numberOfParkingLanes = getNumberOfParkingLinesWhereCanBeParked(vehicleId);
         int[] indicesOfParkingLanes = new int[(int) numberOfParkingLanes];
         int size = parkingPermissions[vehicleId].length;
 
@@ -89,4 +89,5 @@ public class Garage {
 
         return indicesOfParkingLanes;
     }
+
 }

@@ -54,12 +54,12 @@ public class InstanceParser {
         assertArrayLength(typesOfSchedule.length, numberOfVehicles);
         assertBlankLine(lines, currentLine++);
 
-        List<Vehicle> vehicles = new ArrayList<>();
+        List<Vehicle> vehicles = new ArrayList<>(numberOfVehicles);
         for (int i = 0; i < numberOfVehicles; i++) {
             vehicles.add(new Vehicle(vehiclesLengths[i], vehicleSeries[i], typesOfSchedule[i], departureTimes[i]));
         }
 
-        List<ParkingLane> parkingLanes = new ArrayList<>();
+        List<ParkingLane> parkingLanes = new ArrayList<>(numberOfParkingLanes);
         for (int i = 0; i < numberOfParkingLanes; i++) {
             parkingLanes.add(new ParkingLane(parkingLanesLengths[i]));
         }

@@ -1,6 +1,9 @@
 package hr.fer.tki.models;
 
-public class Vehicle {
+import java.util.Comparator;
+import java.util.Objects;
+
+public class Vehicle implements Comparable<Vehicle> {
     private static int counter = 0;
 
     private int id;
@@ -51,5 +54,30 @@ public class Vehicle {
 
     public void setDepartureTime(int departureTime) {
         this.departureTime = departureTime;
+    }
+
+    @Override
+    public int compareTo(Vehicle other) {
+        return Comparator
+                .comparingInt(Vehicle::getSeriesOfVehicle)
+                .thenComparingInt(Vehicle::getDepartureTime)
+                .thenComparingInt(Vehicle::getTypeOfSchedule)
+                .thenComparingInt(Vehicle::getLengthOfVehicle)
+                .thenComparingInt(Vehicle::getId)
+                .compare(this, other);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vehicle vehicle = (Vehicle) o;
+        return id == vehicle.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }
