@@ -49,7 +49,7 @@ public class GreedyParkingAlgorithm {
                         parkingLanes.add(allParkingLanes.get(index));
                     }
                 }
-                //pakrirne linije su sortirane rastuce po broju blokirajucih linija pa padajuce po slobodnom prostoru
+                //pakrirne linije su sortirane rastuce po broju blokirajucih linija i po slobodnom prostoru
                 // tako da se pune prvo one s najmanje blokirajucih linija pa onda one na kojima je preostalo najmanje
                 //slobodnog prosotra da se minimizira broj koristenih traka
                 for (ParkingLane parkingLane : parkingLanes) {

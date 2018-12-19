@@ -83,6 +83,16 @@ public class ParkingLane implements Comparable<ParkingLane> {
     public boolean parkVehicle(Vehicle vehicle) {
         int lengthOfVehicle = vehicle.getLengthOfVehicle();
 
+        for (ParkingLane parkingLane : blockingParkingLanes) {
+            int parkedVehiclesOnLane = parkingLane.parkedVehicles.size();
+            if (parkedVehiclesOnLane != 0) {
+                Vehicle lastParkedVehicle = parkingLane.parkedVehicles.get(parkedVehiclesOnLane - 1);
+                if (lastParkedVehicle.getDepartureTime() >= vehicle.getDepartureTime()) {
+                    return false;
+                }
+            }
+        }
+
         if (availableSpace - lengthOfVehicle < 0) {
             return false;
         }
