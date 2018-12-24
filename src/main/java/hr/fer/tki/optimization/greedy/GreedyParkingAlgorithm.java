@@ -1,8 +1,9 @@
-package hr.fer.tki.greedy;
+package hr.fer.tki.optimization.greedy;
 
 import hr.fer.tki.models.Garage;
 import hr.fer.tki.models.ParkingLane;
 import hr.fer.tki.models.Vehicle;
+import hr.fer.tki.optimization.AbstractOptimizationAlgorithm;
 
 import java.util.List;
 import java.util.Map;
@@ -10,14 +11,13 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class GreedyParkingAlgorithm {
-
-    private Garage garage;
+public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
 
     public GreedyParkingAlgorithm(Garage garage) {
-        this.garage = garage;
+        super(garage);
     }
 
+    @Override
     public void parkVehiclesInTheGarage() {
         List<Vehicle> vehicles = garage.getVehicles();
         List<ParkingLane> allParkingLanes = garage.getParkingLanes();

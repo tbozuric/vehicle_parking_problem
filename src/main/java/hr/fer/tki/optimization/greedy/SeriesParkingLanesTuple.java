@@ -1,4 +1,4 @@
-package hr.fer.tki.greedy;
+package hr.fer.tki.optimization.greedy;
 
 import java.util.Comparator;
 

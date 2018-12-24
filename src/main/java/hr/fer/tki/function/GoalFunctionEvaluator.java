@@ -27,7 +27,7 @@ public class GoalFunctionEvaluator {
     private List<Vehicle> vehicles;
 
 
-    private GoalFunctionEvaluator(Garage garage) {
+    public GoalFunctionEvaluator(Garage garage) {
         Objects.requireNonNull(garage, "Garage must not be null!");
         this.parkingLanes = garage.getParkingLanes();
         this.vehicles = garage.getVehicles();
@@ -137,9 +137,10 @@ public class GoalFunctionEvaluator {
         double r1 = pow(vehicles.size() - parkingLanes.stream().filter(x -> x.getNumberOfParkedVehicles() > 0).count(),
                 -1);
         double r2 = pow(parkingLanes.size() - 1, -1);
+        double g3Value = g3.get();
         double r3 = pow(15 * numberOfEvaluations, -1);
 
-        double result = g1.get() * r1 + g2.get() * r2 + g3.get() * r3;
+        double result = g1.get() * r1 + g2.get() * r2 + g3Value * r3;
         numberOfEvaluations = 0;
         return result;
     }
