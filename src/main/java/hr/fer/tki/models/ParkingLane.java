@@ -74,6 +74,14 @@ public class ParkingLane implements Comparable<ParkingLane> {
         return availableSpace <= DISTANCE_BETWEEN_VEHICLES;
     }
 
+    public double getAvailableSpace() {
+        return availableSpace;
+    }
+
+    public int getNumberOfParkedVehicles(){
+        return parkedVehicles.size();
+    }
+
     public void setSeriesOfParkedVehicles(Vehicle vehicle) {
         if (vehicleSeries == -1) {
             vehicleSeries = vehicle.getSeriesOfVehicle();
@@ -123,9 +131,6 @@ public class ParkingLane implements Comparable<ParkingLane> {
         return blockingParkingLanes.size();
     }
 
-    private double getAvailableSpace() {
-        return availableSpace;
-    }
 
     @Override
     public int compareTo(ParkingLane other) {
