@@ -19,14 +19,13 @@ public class ParkingLane implements Comparable<ParkingLane> {
      * Parking lanes that block this one.
      */
     private List<ParkingLane> blockingParkingLanes;
-    private List<Vehicle> parkedVehicles;
+
     public ParkingLane(int lengthOfLane) {
         this.id = counter++;
         this.vehicleSeries = -1;
         this.lengthOfLane = lengthOfLane;
         this.availableSpace = lengthOfLane;
         this.blockingParkingLanes = new ArrayList<>();
-        this.parkedVehicles = new ArrayList<>();
     }
 
 
@@ -62,15 +61,6 @@ public class ParkingLane implements Comparable<ParkingLane> {
         blockingParkingLanes.add(blockingParkingLane);
     }
 
-    public List<Vehicle> getParkedVehicles() {
-        return parkedVehicles;
-    }
-
-    public void setParkedVehicles(List<Vehicle> parkedVehicles) {
-        this.parkedVehicles = parkedVehicles;
-    }
-
-
     public boolean isParkingLaneFull() {
         return availableSpace <= DISTANCE_BETWEEN_VEHICLES;
     }
@@ -83,53 +73,11 @@ public class ParkingLane implements Comparable<ParkingLane> {
         this.availableSpace = availableSpace;
     }
 
-    public int getNumberOfParkedVehicles(){
-        return parkedVehicles.size();
-    }
-
     public void setSeriesOfParkedVehicles(Vehicle vehicle) {
         if (vehicleSeries == -1) {
             vehicleSeries = vehicle.getSeriesOfVehicle();
         }
     }
-
-//    public boolean parkVehicle(Vehicle vehicle) {
-//        int lengthOfVehicle = vehicle.getLengthOfVehicle();
-//
-//        for (ParkingLane parkingLane : blockingParkingLanes) {
-//            int parkedVehiclesOnLane = parkingLane.parkedVehicles.size();
-//            if (parkedVehiclesOnLane != 0) {
-//                Vehicle lastParkedVehicle = parkingLane.parkedVehicles.get(parkedVehiclesOnLane - 1);
-//                if (lastParkedVehicle.getDepartureTime() >= vehicle.getDepartureTime()) {
-//                    return false;
-//                }
-//            }
-//        }
-//
-//        if (availableSpace - lengthOfVehicle < 0) {
-//            return false;
-//        }
-//
-//        int numberOfParkedVehicles = parkedVehicles.size();
-//        if (numberOfParkedVehicles >= 1) {
-//
-//            if (availableSpace - lengthOfVehicle - DISTANCE_BETWEEN_VEHICLES < 0) {
-//                return false;
-//            }
-//
-//            availableSpace = availableSpace - lengthOfVehicle - DISTANCE_BETWEEN_VEHICLES;
-//            setSeriesOfParkedVehicles(vehicle);
-//            parkedVehicles.add(vehicle);
-//            return true;
-//
-//        } else if (availableSpace - lengthOfVehicle >= 0) {
-//            availableSpace -= lengthOfVehicle;
-//            setSeriesOfParkedVehicles(vehicle);
-//            parkedVehicles.add(vehicle);
-//            return true;
-//        }
-//        return false;
-//    }
 
     private int getNumberOfBlockingLanes() {
         return blockingParkingLanes.size();

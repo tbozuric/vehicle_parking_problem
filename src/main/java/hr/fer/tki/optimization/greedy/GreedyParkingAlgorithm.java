@@ -53,7 +53,7 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
                 // tako da se pune prvo one s najmanje blokirajucih linija pa onda one na kojima je preostalo najmanje
                 //slobodnog prosotra da se minimizira broj koristenih traka
                 for (ParkingLane parkingLane : parkingLanes) {
-                    if (parkingLane.parkVehicle(vehicle)) {
+                    if (garage.getParkingSchedule().parkVehicle(vehicle, parkingLane)) {
                         break;
                     }
                 }
