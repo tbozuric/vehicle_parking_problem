@@ -37,7 +37,7 @@ public class GarageValidator {
     private void validateAllVehiclesAtExactlyOneLocation() {
         Set<Vehicle> distinctVehicles = new HashSet<>();
         int vehiclesCount = 0;
-        for (ParkingLane lane : garage.getParkingLanes()) {
+        for (ParkingLane lane : garage.getParkingSchedule().getParkingLanes()) {
             List<Vehicle> parkedVehicles = lane.getParkedVehicles();
             if (parkedVehicles == null)
                 continue;
@@ -60,7 +60,7 @@ public class GarageValidator {
     }
 
     private void validateEveryLaneContainsSameSeriesVehicles() {
-        garage.getParkingLanes().forEach(lane -> {
+        garage.getParkingSchedule().getParkingLanes().forEach(lane -> {
             Object[] distinctSeries = lane.getParkedVehicles().stream().map(Vehicle::getSeriesOfVehicle).distinct().toArray();
             if (distinctSeries.length > 1) {
                 validatorResult.addViolatedRestriction("Lane contains vehicles of different series.");
@@ -69,11 +69,11 @@ public class GarageValidator {
     }
 
     private void validateVehiclesAreInLanesWithCorrectPermission() {
-        int numberOfLanes = garage.getParkingLanes().size();
+        int numberOfLanes = garage.getParkingSchedule().getParkingLanes().size();
         for (int laneIndex = 0; laneIndex < numberOfLanes; laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
+            ParkingLane lane = garage.getParkingSchedule().getParkingLanes().get(laneIndex);
             for (Vehicle vehicle : lane.getParkedVehicles()) {
-                int vehicleIndex = garage.getVehicles().indexOf(vehicle);
+                int vehicleIndex = garage.getParkingSchedule().getVehicles().indexOf(vehicle);
 
                 if (garage.getParkingPermissions()[vehicleIndex][laneIndex].equals(false)) {
                     validatorResult.addViolatedRestriction(String.format("Wrong vehicles parked at lane %d.", vehicleIndex));
@@ -84,7 +84,7 @@ public class GarageValidator {
 
     private void validateLanesAreNotOverloaded() {
         for (int laneIndex = 0; laneIndex < garage.getNumberOfParkingLanes(); laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
+            ParkingLane lane = garage.getParkingSchedule().getParkingLanes().get(laneIndex);
 
             List<Vehicle> parkedVehicles = lane.getParkedVehicles();
             int numberOfParked = parkedVehicles.size();
@@ -102,7 +102,7 @@ public class GarageValidator {
 
     private void validateVehiclesTimesAreSortedCorrectly() {
         for (int laneIndex = 0; laneIndex < garage.getNumberOfParkingLanes(); laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
+            ParkingLane lane = garage.getParkingSchedule().getParkingLanes().get(laneIndex);
 
             int time = -1;
             for (Vehicle vehicle : lane.getParkedVehicles()) {
@@ -118,7 +118,7 @@ public class GarageValidator {
 
     private void validateBlockingTracksAreBeforeBlockedOnes() {
         for (int laneIndex = 0; laneIndex < garage.getNumberOfParkingLanes(); laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
+            ParkingLane lane = garage.getParkingSchedule().getParkingLanes().get(laneIndex);
             List<Vehicle> vehiclesInThisLane = lane.getParkedVehicles();
             if (vehiclesInThisLane.isEmpty() || lane.getBlockingParkingLanes() == null)
                 continue;

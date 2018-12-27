@@ -19,8 +19,8 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
 
     @Override
     public void parkVehiclesInTheGarage() {
-        List<Vehicle> vehicles = garage.getVehicles();
-        List<ParkingLane> allParkingLanes = garage.getParkingLanes();
+        List<Vehicle> vehicles = garage.getParkingSchedule().getVehicles();
+        List<ParkingLane> allParkingLanes = garage.getParkingSchedule().getParkingLanes();
         //sortiraj vozila po tipu
         Map<Integer, List<Vehicle>> vehicleListGroupedBySeries =
                 vehicles.stream().collect(Collectors.groupingBy(Vehicle::getSeriesOfVehicle));

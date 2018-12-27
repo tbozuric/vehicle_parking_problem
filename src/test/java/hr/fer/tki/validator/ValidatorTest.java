@@ -54,76 +54,76 @@ public class ValidatorTest {
 
     @Test
     public void formation_is_valid() {
-        garage.getParkingLanes().get(1).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleC)));
-        garage.getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleC)));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
 
         assertTrue(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void same_vehicle_at_multiple_lanes() {
-        garage.getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleA));
-        garage.getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleA));
-        garage.getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
+        garage.getParkingSchedule().getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleA));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleA));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void not_all_vehicles_parked() {
-        garage.getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleA));
-        garage.getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleC));
+        garage.getParkingSchedule().getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleA));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleC));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void redundant_vehicles_at_same_lane() {
-        garage.getParkingLanes().get(0).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleA)));
-        garage.getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleA));
-        garage.getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
+        garage.getParkingSchedule().getParkingLanes().get(0).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleA)));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleA));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void different_series_vehicles_in_same_lane() {
-        garage.getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleC));
-        garage.getParkingLanes().get(2).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleB)));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleC));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleB)));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void vehicle_in_forbidden_lane() {
-        garage.getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleA));
-        garage.getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleB));
-        garage.getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleC));
+        garage.getParkingSchedule().getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleA));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleB));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleC));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void too_many_vehicles_in_lane() {
-        garage.getParkingLanes().get(0).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleC)));
-        garage.getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
+        garage.getParkingSchedule().getParkingLanes().get(0).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleA, vehicleC)));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void wrong_order_in_same_lane() {
-        garage.getParkingLanes().get(1).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleC, vehicleA)));
-        garage.getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(new ArrayList<>(Arrays.asList(vehicleC, vehicleA)));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }
 
     @Test
     public void blocking_lane_should_finish_before_blocked() {
-        garage.getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleC));
-        garage.getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleA));
-        garage.getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
+        garage.getParkingSchedule().getParkingLanes().get(0).setParkedVehicles(singletonList(vehicleC));
+        garage.getParkingSchedule().getParkingLanes().get(1).setParkedVehicles(singletonList(vehicleA));
+        garage.getParkingSchedule().getParkingLanes().get(2).setParkedVehicles(singletonList(vehicleB));
 
         assertFalse(GarageValidator.validate(garage).isValid());
     }

@@ -29,8 +29,8 @@ public class GoalFunctionEvaluator {
 
     public GoalFunctionEvaluator(Garage garage) {
         Objects.requireNonNull(garage, "Garage must not be null!");
-        this.parkingLanes = garage.getParkingLanes();
-        this.vehicles = garage.getVehicles();
+        this.parkingLanes = garage.getParkingSchedule().getParkingLanes();
+        this.vehicles = garage.getParkingSchedule().getVehicles();
         this.numberOfEvaluations = 0;
         initFunctions();
     }
