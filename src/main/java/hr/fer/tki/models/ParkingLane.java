@@ -7,7 +7,8 @@ import java.util.Objects;
 
 public class ParkingLane implements Comparable<ParkingLane> {
     private static int counter = 0;
-    static final double DISTANCE_BETWEEN_VEHICLES = 0.5;
+    public static final int VEHICLE_SERIES_NOT_DEFINED = -1;
+    public static final double DISTANCE_BETWEEN_VEHICLES = 0.5;
 
     private int id;
     private int lengthOfLane;
@@ -22,7 +23,7 @@ public class ParkingLane implements Comparable<ParkingLane> {
 
     public ParkingLane(int lengthOfLane) {
         this.id = counter++;
-        this.vehicleSeries = -1;
+        this.vehicleSeries = VEHICLE_SERIES_NOT_DEFINED;
         this.lengthOfLane = lengthOfLane;
         this.availableSpace = lengthOfLane;
         this.blockingParkingLanes = new ArrayList<>();
@@ -73,9 +74,9 @@ public class ParkingLane implements Comparable<ParkingLane> {
         this.availableSpace = availableSpace;
     }
 
-    public void setSeriesOfParkedVehicles(Vehicle vehicle) {
-        if (vehicleSeries == -1) {
-            vehicleSeries = vehicle.getSeriesOfVehicle();
+    public void setSeriesOfParkedVehicles(int series) {
+        if (vehicleSeries == VEHICLE_SERIES_NOT_DEFINED) {
+            vehicleSeries = series;
         }
     }
 

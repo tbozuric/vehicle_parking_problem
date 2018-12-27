@@ -38,23 +38,6 @@ public class Garage {
         this.numberOfVehicles = numberOfVehicles;
     }
 
-//    public List<ParkingLane> getParkingLanes() {
-//        return parkingLanes;
-//    }
-//
-//    public void setParkingLanes(List<ParkingLane> parkingLanes) {
-//        this.parkingLanes = parkingLanes;
-//    }
-//
-//    public List<Vehicle> getVehicles() {
-//        return vehicles;
-//    }
-//
-//    public void setVehicles(List<Vehicle> vehicles) {
-//        this.vehicles = vehicles;
-//    }
-
-
     public ParkingSchedule getParkingSchedule() {
         return parkingSchedule;
     }
