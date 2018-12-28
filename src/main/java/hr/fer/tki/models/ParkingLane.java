@@ -6,14 +6,10 @@ import java.util.Objects;
 
 public class ParkingLane {
     private static int counter = 0;
-    public static final int VEHICLE_SERIES_NOT_DEFINED = -1;
-    public static final double DISTANCE_BETWEEN_VEHICLES = 0.5;
+    static final double DISTANCE_BETWEEN_VEHICLES = 0.5;
 
     private int id;
     private int lengthOfLane;
-    private int vehicleSeries;
-
-//    private double availableSpace;
 
     /**
      * Parking lanes that block this one.
@@ -22,12 +18,9 @@ public class ParkingLane {
 
     public ParkingLane(int lengthOfLane) {
         this.id = counter++;
-        this.vehicleSeries = VEHICLE_SERIES_NOT_DEFINED;
         this.lengthOfLane = lengthOfLane;
-//        this.availableSpace = lengthOfLane;
         this.blockingParkingLanes = new ArrayList<>();
     }
-
 
     public int getId() {
         return id;
@@ -37,47 +30,17 @@ public class ParkingLane {
         return (double) lengthOfLane;
     }
 
-    public int getVehicleSeries() {
-        return vehicleSeries;
-    }
-
     public List<ParkingLane> getBlockingParkingLanes() {
         return blockingParkingLanes;
-    }
-
-    public void setLengthOfLane(int lengthOfLane) {
-        this.lengthOfLane = lengthOfLane;
-    }
-
-    public void setVehicleSeries(int vehicleSeries) {
-        this.vehicleSeries = vehicleSeries;
-    }
-
-    public void setBlockingParkingLanes(List<ParkingLane> blockingParkingLanes) {
-        this.blockingParkingLanes = blockingParkingLanes;
     }
 
     public void addBlockingParkingLane(ParkingLane blockingParkingLane) {
         blockingParkingLanes.add(blockingParkingLane);
     }
 
-    public void setSeriesOfParkedVehicles(int series) {
-        if (vehicleSeries == VEHICLE_SERIES_NOT_DEFINED) {
-            vehicleSeries = series;
-        }
-    }
-
     public int getNumberOfBlockingLanes() {
         return blockingParkingLanes.size();
     }
-
-//    @Override
-//    public int compareTo(ParkingLane other) {
-//        return Comparator.comparingInt(ParkingLane::getNumberOfBlockingLanes)
-//                .thenComparingDouble(ParkingLane::getAvailableSpace)
-//                .thenComparingInt(ParkingLane::getId)
-//                .compare(this, other);
-//    }
 
     @Override
     public boolean equals(Object o) {

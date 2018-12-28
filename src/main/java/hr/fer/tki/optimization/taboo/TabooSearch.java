@@ -80,7 +80,7 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
 
         List<ParkingLane> relevantLanes = currentSchedule.getParkingLanes()
                                                 .stream()
-                                                .filter(lane -> lane.getVehicleSeries() == series)
+                                                .filter(lane -> currentSchedule.getSeriesOfParkedVeihclesAtLane(lane) == series)
                                                 .collect(Collectors.toList());
 
         for (ParkingLane firstLane : currentSchedule.getParkingLanes()) { //tODO

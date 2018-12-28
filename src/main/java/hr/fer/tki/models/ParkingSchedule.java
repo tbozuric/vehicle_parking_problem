@@ -4,27 +4,30 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static hr.fer.tki.models.ParkingLane.DISTANCE_BETWEEN_VEHICLES;
-import static hr.fer.tki.models.ParkingLane.VEHICLE_SERIES_NOT_DEFINED;
 
 public class ParkingSchedule {
+    public static final int VEHICLE_SERIES_NOT_DEFINED = -1;
 
     private List<ParkingLane> parkingLanes;
     private List<Vehicle> vehicles;
     private Map<ParkingLane, List<Vehicle>> vehiclesAtLanes;
     private Map<ParkingLane, Double> availableSpaceAtLanes;
+    private Map<ParkingLane, Integer> vehicleSeriesAtLanes;
 
     public ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles) {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = new HashMap<>();
         this.availableSpaceAtLanes = parkingLanes.stream().collect(Collectors.toMap(lane -> lane, ParkingLane::getLengthOfLane));
+        this.vehicleSeriesAtLanes = parkingLanes.stream().collect(Collectors.toMap(lane -> lane, lane -> VEHICLE_SERIES_NOT_DEFINED));
     }
 
-    private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane, List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes) {
+    private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane, List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes, Map<ParkingLane, Integer> vehicleSeriesAtLanes) {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = vehiclesAtLanes;
         this.availableSpaceAtLanes = availableSpaceAtLanes;
+        this.vehicleSeriesAtLanes = vehicleSeriesAtLanes;
     }
 
     public List<ParkingLane> getParkingLanes() {
@@ -45,7 +48,12 @@ public class ParkingSchedule {
             List<Vehicle> copiedVehicles = new ArrayList<>(vehiclesAtLanes.get(lane));
             vehiclesAtLanesCopy.put(lane, copiedVehicles);
         }
-        return new ParkingSchedule(parkingLanes, vehicles, vehiclesAtLanesCopy, new HashMap<>(availableSpaceAtLanes));
+        return new ParkingSchedule(
+                parkingLanes,
+                vehicles,
+                vehiclesAtLanesCopy,
+                new HashMap<>(availableSpaceAtLanes),
+                new HashMap<>(vehicleSeriesAtLanes));
     }
 
     public boolean parkVehicle(Vehicle vehicle, ParkingLane parkingLane) {
@@ -97,7 +105,7 @@ public class ParkingSchedule {
         } else {
             availableSpaceAtLanes.put(lane, availableSpace - vehicle.getLengthOfVehicle() - DISTANCE_BETWEEN_VEHICLES);
         }
-        lane.setSeriesOfParkedVehicles(vehicle.getSeriesOfVehicle());
+        setSeriesOfParkedVehiclesAtLane(lane, vehicle.getSeriesOfVehicle());
 
         int position = findPosition(vehicle, vehicles);
         vehicles.add(position, vehicle);
@@ -112,7 +120,7 @@ public class ParkingSchedule {
             availableSpaceAtLanes.put(lane, availableSpace + vehicle.getLengthOfVehicle() + DISTANCE_BETWEEN_VEHICLES);
         } else {
             availableSpaceAtLanes.put(lane, lane.getLengthOfLane());
-            lane.setSeriesOfParkedVehicles(VEHICLE_SERIES_NOT_DEFINED);
+            setSeriesOfParkedVehiclesAtLane(lane, VEHICLE_SERIES_NOT_DEFINED);
         }
     }
 
@@ -122,6 +130,14 @@ public class ParkingSchedule {
 
     public boolean isParkingLaneFull(ParkingLane lane) {
         return availableSpaceAtLanes.get(lane) <= DISTANCE_BETWEEN_VEHICLES;
+    }
+
+    public int getSeriesOfParkedVeihclesAtLane(ParkingLane lane) {
+        return vehicleSeriesAtLanes.get(lane);
+    }
+
+    public void setSeriesOfParkedVehiclesAtLane(ParkingLane lane, int series) {
+        vehicleSeriesAtLanes.put(lane, series);
     }
 
     private int findPosition(Vehicle vehicle, List<Vehicle> vehicles) {

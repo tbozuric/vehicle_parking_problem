@@ -9,6 +9,8 @@ import hr.fer.tki.optimization.AbstractOptimizationAlgorithm;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static hr.fer.tki.models.ParkingSchedule.VEHICLE_SERIES_NOT_DEFINED;
+
 public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
 
     public GreedyParkingAlgorithm(Garage garage) {
@@ -43,8 +45,9 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
                     ParkingLane lane = allParkingLanes.get(index);
                     //uzmi u obzir parkirnu traku ako nije puna i ako na njoj nije parkirano nijedno vozilo ili
                     //ako trenutno vozilo ima istu seriju kao i vec pakrirano
-                    if (!parkingSchedule.isParkingLaneFull(lane) && (lane.getVehicleSeries() == -1 ||
-                            lane.getVehicleSeries() == vehicle.getSeriesOfVehicle())) {
+                    int seriesOfParkedVeihclesAtLane = parkingSchedule.getSeriesOfParkedVeihclesAtLane(lane);
+                    if (!parkingSchedule.isParkingLaneFull(lane) && (seriesOfParkedVeihclesAtLane == VEHICLE_SERIES_NOT_DEFINED
+                            || seriesOfParkedVeihclesAtLane == vehicle.getSeriesOfVehicle())) {
                         parkingLanes.add(allParkingLanes.get(index));
                     }
                 }
