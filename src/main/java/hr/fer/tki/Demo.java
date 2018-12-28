@@ -19,19 +19,9 @@ public class Demo {
         for(String restriction : validatorResult.getViolatedRestrictions()){
             System.out.println(restriction);
         }
-        System.out.println(validatorResult.isValid());
-
-        GoalFunctionEvaluator evaluator = new GoalFunctionEvaluator(garage);
-        System.out.println(evaluator.evaluateMaximizationProblem());
-        System.out.println(evaluator.evaluateMinimizationProblem());
-        System.out.println(evaluator.evaluateTotalProblem());
+        System.out.println("GREEDY VALID: " + validatorResult.isValid());
 
         TabooSearch tabooSearch = new TabooSearch(garage);
         tabooSearch.parkVehiclesInTheGarage();
-
-        evaluator = new GoalFunctionEvaluator(garage);
-        System.out.println(evaluator.evaluateMaximizationProblem());
-        System.out.println(evaluator.evaluateMinimizationProblem());
-        System.out.println(evaluator.evaluateTotalProblem());
     }
 }

@@ -14,11 +14,13 @@ import static hr.fer.tki.models.ParkingSchedule.VEHICLE_SERIES_NOT_DEFINED;
 public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
 
     public GreedyParkingAlgorithm(Garage garage) {
-        super(garage);
+        super(garage, "Greedy algorithm");
     }
 
     @Override
     public void parkVehiclesInTheGarage() {
+        notifyAlgorithmStarted();
+
         ParkingSchedule parkingSchedule = garage.getParkingSchedule();
         List<Vehicle> vehicles = parkingSchedule.getVehicles();
         List<ParkingLane> allParkingLanes = parkingSchedule.getParkingLanes();
@@ -61,6 +63,8 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
                 }
             }
         }
+        notifyListenersAboutNewSolution("GREEDY");
+        notifyAlgorithmOver();
     }
 
     class GreedyLaneComparator implements Comparator<ParkingLane> {
