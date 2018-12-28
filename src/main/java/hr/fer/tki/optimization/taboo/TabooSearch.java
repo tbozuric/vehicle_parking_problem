@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class TabooSearch extends AbstractOptimizationAlgorithm {
 
-    private static final int ITERATION_STOP_CONDITION = 10;
+    private static final int ITERATION_STOP_CONDITION = 100;
     private static final int TABOO_DURATION = 10;
 
     private Map<Vehicle, Integer> taboo;
@@ -29,26 +29,34 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
 
     @Override
     public void parkVehiclesInTheGarage() {
-        ParkingSchedule incumbentSolution = garage.getParkingSchedule();
+        ParkingSchedule incumbentSchedule = garage.getParkingSchedule();
         GoalFunctionEvaluator evaluator = new GoalFunctionEvaluator(garage);
-        double bestSolution = evaluator.evaluateTotalProblem();
+        double incumbentResult = evaluator.evaluateTotalProblem();
 
+        int[] distinctSeries = garage.getParkingSchedule().getVehicles().stream().mapToInt(Vehicle::getSeriesOfVehicle).distinct().toArray();
         for (int iteration = 0; iteration < ITERATION_STOP_CONDITION; iteration++) {
-            List<ParkingSchedule> neighbourhood = createNeighbourhood(garage.getParkingSchedule(), 2);
+            int series = distinctSeries[iteration % distinctSeries.length];
+            List<ParkingSchedule> neighbourhood = createNeighbourhood(garage.getParkingSchedule(), series);
             removeInvalidNeighbours(neighbourhood);
 
+            ParkingSchedule iterationBestSchedule = null;
+            double iterationBestResult = Double.POSITIVE_INFINITY;
             for (ParkingSchedule neighbour : neighbourhood) {
                 garage.setParkingSchedule(neighbour);
                 GoalFunctionEvaluator neighbourEvaluator = new GoalFunctionEvaluator(garage);
-                double solution = neighbourEvaluator.evaluateTotalProblem();
+                double result = neighbourEvaluator.evaluateTotalProblem();
 
-                if (solution < bestSolution) {
-                    incumbentSolution = neighbour;
+                if (iterationBestSchedule == null || result < iterationBestResult) {
+                    iterationBestSchedule = neighbour;
+                    iterationBestResult = result;
                 }
+            }
+            if (iterationBestSchedule != null && iterationBestResult < incumbentResult) {
+                incumbentSchedule = iterationBestSchedule;
             }
         }
 
-        garage.setParkingSchedule(incumbentSolution);
+        garage.setParkingSchedule(incumbentSchedule);
     }
 
     private List<ParkingSchedule> createNeighbourhood(ParkingSchedule currentSchedule, int series) {
@@ -59,11 +67,16 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
         for (SwappingVehiclesPair pair : swappingVehiclesList) {
             ParkingSchedule parkingSchedule = currentSchedule.deepcopy();
 
-            parkingSchedule.removeVehicleFromLane(pair.getFirstVehicle(), pair.getFirstLane());
-            parkingSchedule.removeVehicleFromLane(pair.getSecondVehicle(), pair.getSecondLane());
+            if (pair.getSecondVehicle() != null) {
+                parkingSchedule.removeVehicleFromLane(pair.getFirstVehicle(), pair.getFirstLane());
+                parkingSchedule.removeVehicleFromLane(pair.getSecondVehicle(), pair.getSecondLane());
 
-            parkingSchedule.addVehicleToLane(pair.getFirstVehicle(), pair.getSecondLane());
-            parkingSchedule.addVehicleToLane(pair.getSecondVehicle(), pair.getFirstLane());
+                parkingSchedule.addVehicleToLane(pair.getFirstVehicle(), pair.getSecondLane());
+                parkingSchedule.addVehicleToLane(pair.getSecondVehicle(), pair.getFirstLane());
+            } else {
+                parkingSchedule.removeVehicleFromLane(pair.getFirstVehicle(), pair.getFirstLane());
+                parkingSchedule.addVehicleToLane(pair.getFirstVehicle(), pair.getSecondLane());
+            }
 
             neighbourhood.add(parkingSchedule);
         }
@@ -102,6 +115,21 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
                     for (Vehicle secondLaneVehicle : vehiclesAtSecondLane) {
                         swappingVehiclesList.add(new SwappingVehiclesPair(firstLane, firstLaneVehicle, secondLane, secondLaneVehicle));
                     }
+                }
+            }
+        }
+
+        List<ParkingLane> emptyLanes = currentSchedule.getParkingLanes()
+                                                .stream()
+                                                .filter(lane -> currentSchedule.getVehiclesAt(lane).size() == 0)
+                                                .collect(Collectors.toList());
+
+        for (ParkingLane firstLane : relevantLanes) {
+            for (ParkingLane emptyLane : emptyLanes) {
+                List<Vehicle> vehiclesAtFirstLane = currentSchedule.getVehiclesAt(firstLane);
+
+                for (Vehicle firstLaneVehicle : vehiclesAtFirstLane) {
+                    swappingVehiclesList.add(new SwappingVehiclesPair(firstLane, firstLaneVehicle, emptyLane, null));
                 }
             }
         }
