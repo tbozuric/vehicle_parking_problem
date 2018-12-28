@@ -11,7 +11,6 @@ public class SeriesParkingLanesTuple implements Comparable<SeriesParkingLanesTup
         this.numberOfParkingLines = numberOfParkingLines;
     }
 
-
     @Override
     public int compareTo(SeriesParkingLanesTuple o) {
         return Comparator.comparingInt(SeriesParkingLanesTuple::getNumberOfParkingLines).compare(this, o);

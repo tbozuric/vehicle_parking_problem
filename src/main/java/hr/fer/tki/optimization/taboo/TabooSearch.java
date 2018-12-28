@@ -12,14 +12,19 @@ import hr.fer.tki.validator.ValidatorResult;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TabooSearch extends AbstractOptimizationAlgorithm {
 
+    private static final int ITERATION_STOP_CONDITION = 10;
+    private static final int TABOO_DURATION = 10;
+
+    private Map<Vehicle, Integer> taboo;
 
     public TabooSearch(Garage garage) {
         super(garage);
-
+        taboo = garage.getParkingSchedule().getVehicles().stream().collect(Collectors.toMap(vehicle -> vehicle, vehicle -> 0));
     }
 
     @Override
@@ -28,16 +33,18 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
         GoalFunctionEvaluator evaluator = new GoalFunctionEvaluator(garage);
         double bestSolution = evaluator.evaluateTotalProblem();
 
-        List<ParkingSchedule> neighbourhood = createNeighbourhood(garage.getParkingSchedule(), 1);
-        removeInvalidNeighbours(neighbourhood);
+        for (int iteration = 0; iteration < ITERATION_STOP_CONDITION; iteration++) {
+            List<ParkingSchedule> neighbourhood = createNeighbourhood(garage.getParkingSchedule(), 2);
+            removeInvalidNeighbours(neighbourhood);
 
-        for (ParkingSchedule neighbour : neighbourhood) {
-            garage.setParkingSchedule(neighbour);
-            GoalFunctionEvaluator neighbourEvaluator = new GoalFunctionEvaluator(garage);
-            double solution = neighbourEvaluator.evaluateTotalProblem();
+            for (ParkingSchedule neighbour : neighbourhood) {
+                garage.setParkingSchedule(neighbour);
+                GoalFunctionEvaluator neighbourEvaluator = new GoalFunctionEvaluator(garage);
+                double solution = neighbourEvaluator.evaluateTotalProblem();
 
-            if (solution < bestSolution) {
-                incumbentSolution = neighbour;
+                if (solution < bestSolution) {
+                    incumbentSolution = neighbour;
+                }
             }
         }
 
@@ -83,7 +90,7 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
                                                 .filter(lane -> currentSchedule.getSeriesOfParkedVeihclesAtLane(lane) == series)
                                                 .collect(Collectors.toList());
 
-        for (ParkingLane firstLane : currentSchedule.getParkingLanes()) { //tODO
+        for (ParkingLane firstLane : relevantLanes) {
             for (ParkingLane secondLane : relevantLanes) {
                 if (firstLane.equals(secondLane))
                     continue;

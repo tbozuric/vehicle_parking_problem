@@ -26,16 +26,8 @@ public class Garage {
         return numberOfParkingLanes;
     }
 
-    public void setNumberOfParkingLanes(int numberOfParkingLanes) {
-        this.numberOfParkingLanes = numberOfParkingLanes;
-    }
-
     public int getNumberOfVehicles() {
         return numberOfVehicles;
-    }
-
-    public void setNumberOfVehicles(int numberOfVehicles) {
-        this.numberOfVehicles = numberOfVehicles;
     }
 
     public ParkingSchedule getParkingSchedule() {
@@ -48,10 +40,6 @@ public class Garage {
 
     public Boolean[][] getParkingPermissions() {
         return parkingPermissions;
-    }
-
-    public void setParkingPermissions(Boolean[][] parkingPermissions) {
-        this.parkingPermissions = parkingPermissions;
     }
 
     public int getNumberOfParkingLinesWhereCanBeParked(int vehicleId) {

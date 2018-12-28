@@ -22,7 +22,7 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
         ParkingSchedule parkingSchedule = garage.getParkingSchedule();
         List<Vehicle> vehicles = parkingSchedule.getVehicles();
         List<ParkingLane> allParkingLanes = parkingSchedule.getParkingLanes();
-        //sortiraj vozila po tipu
+        // sortiraj vozila po tipu
         Map<Integer, List<Vehicle>> vehicleListGroupedBySeries =
                 vehicles.stream().collect(Collectors.groupingBy(Vehicle::getSeriesOfVehicle));
 
@@ -35,25 +35,25 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
 
         for (SeriesParkingLanesTuple tuple : tuples) {
             int series = tuple.getSeriesOfVehicle();
-            //vozila ce automatski biti sortirana po vremenu kretanja, zatim po tipu rasporeda pa po duzini da
-            //se automatski redaju da ostvare cim vise profita u fji dobrote
+            // vozila ce automatski biti sortirana po vremenu kretanja, zatim po tipu rasporeda pa po duzini da
+            // se automatski redaju da ostvare cim vise profita u fji dobrote
             Set<Vehicle> sortedVehicles = new TreeSet<>(vehicleListGroupedBySeries.get(series));
             for (Vehicle vehicle : sortedVehicles) {
                 int[] indicesOfParkingLanes = garage.getIdsOfParkingLanesWhereCanBeParked(vehicle.getId());
                 Set<ParkingLane> parkingLanes = new TreeSet<>(new GreedyLaneComparator(parkingSchedule));
                 for (int index : indicesOfParkingLanes) {
                     ParkingLane lane = allParkingLanes.get(index);
-                    //uzmi u obzir parkirnu traku ako nije puna i ako na njoj nije parkirano nijedno vozilo ili
-                    //ako trenutno vozilo ima istu seriju kao i vec pakrirano
+                    // uzmi u obzir parkirnu traku ako nije puna i ako na njoj nije parkirano nijedno vozilo ili
+                    // ako trenutno vozilo ima istu seriju kao i vec pakrirano
                     int seriesOfParkedVeihclesAtLane = parkingSchedule.getSeriesOfParkedVeihclesAtLane(lane);
                     if (!parkingSchedule.isParkingLaneFull(lane) && (seriesOfParkedVeihclesAtLane == VEHICLE_SERIES_NOT_DEFINED
                             || seriesOfParkedVeihclesAtLane == vehicle.getSeriesOfVehicle())) {
                         parkingLanes.add(allParkingLanes.get(index));
                     }
                 }
-                //pakrirne linije su sortirane rastuce po broju blokirajucih linija i po slobodnom prostoru
+                // parkirne linije su sortirane rastuce po broju blokirajucih linija i po slobodnom prostoru
                 // tako da se pune prvo one s najmanje blokirajucih linija pa onda one na kojima je preostalo najmanje
-                //slobodnog prosotra da se minimizira broj koristenih traka
+                // slobodnog prostora da se minimizira broj koristenih traka
                 for (ParkingLane parkingLane : parkingLanes) {
                     if (parkingSchedule.parkVehicle(vehicle, parkingLane)) {
                         break;
