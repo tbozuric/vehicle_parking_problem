@@ -120,7 +120,7 @@ public class GoalFunctionEvaluator {
     }
 
 
-    public double evaluteMinimizationProblem() {
+    public double evaluateMinimizationProblem() {
 
         int numberOfParkingLanes = parkingLanes.size();
 
@@ -143,5 +143,9 @@ public class GoalFunctionEvaluator {
         double result = g1.get() * r1 + g2.get() * r2 + g3Value * r3;
         numberOfEvaluations = 0;
         return result;
+    }
+
+    public double evaluateTotalProblem() {
+        return evaluateMinimizationProblem() - evaluateMaximizationProblem();
     }
 }

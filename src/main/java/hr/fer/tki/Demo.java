@@ -23,11 +23,15 @@ public class Demo {
 
         GoalFunctionEvaluator evaluator = new GoalFunctionEvaluator(garage);
         System.out.println(evaluator.evaluateMaximizationProblem());
-        System.out.println(evaluator.evaluteMinimizationProblem());
+        System.out.println(evaluator.evaluateMinimizationProblem());
+        System.out.println(evaluator.evaluateTotalProblem());
 
         TabooSearch tabooSearch = new TabooSearch(garage);
         tabooSearch.parkVehiclesInTheGarage();
 
-        //todo dalje
+        evaluator = new GoalFunctionEvaluator(garage);
+        System.out.println(evaluator.evaluateMaximizationProblem());
+        System.out.println(evaluator.evaluateMinimizationProblem());
+        System.out.println(evaluator.evaluateTotalProblem());
     }
 }

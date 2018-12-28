@@ -67,14 +67,12 @@ public class ParkingSchedule {
         List<Vehicle> parkedVehicles = getVehiclesAt(parkingLane);
         int numberOfParkedVehicles = parkedVehicles.size();
         if (numberOfParkedVehicles >= 1) {
-
             if (availableSpace - lengthOfVehicle - DISTANCE_BETWEEN_VEHICLES < 0) {
                 return false;
             }
 
             addVehicleToLane(vehicle, parkingLane);
             return true;
-
         } else if (availableSpace - lengthOfVehicle >= 0) {
             addVehicleToLane(vehicle, parkingLane);
             return true;
@@ -92,8 +90,9 @@ public class ParkingSchedule {
         double availableSpace = lane.getAvailableSpace();
         if (vehicles.size() == 0) {
             lane.setAvailableSpace(availableSpace - vehicle.getLengthOfVehicle());
+        } else {
+            lane.setAvailableSpace(availableSpace - vehicle.getLengthOfVehicle() - DISTANCE_BETWEEN_VEHICLES);
         }
-        lane.setAvailableSpace(availableSpace - vehicle.getLengthOfVehicle() - DISTANCE_BETWEEN_VEHICLES);
         lane.setSeriesOfParkedVehicles(vehicle.getSeriesOfVehicle());
 
         int position = findPosition(vehicle, vehicles);
