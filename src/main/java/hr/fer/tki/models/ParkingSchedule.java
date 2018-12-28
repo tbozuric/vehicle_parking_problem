@@ -1,6 +1,7 @@
 package hr.fer.tki.models;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static hr.fer.tki.models.ParkingLane.DISTANCE_BETWEEN_VEHICLES;
 import static hr.fer.tki.models.ParkingLane.VEHICLE_SERIES_NOT_DEFINED;
@@ -10,17 +11,20 @@ public class ParkingSchedule {
     private List<ParkingLane> parkingLanes;
     private List<Vehicle> vehicles;
     private Map<ParkingLane, List<Vehicle>> vehiclesAtLanes;
+    private Map<ParkingLane, Double> availableSpaceAtLanes;
 
     public ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles) {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = new HashMap<>();
+        this.availableSpaceAtLanes = parkingLanes.stream().collect(Collectors.toMap(lane -> lane, ParkingLane::getLengthOfLane));
     }
 
-    private ParkingSchedule(List<ParkingLane> lanes, List<Vehicle> vehicles, Map<ParkingLane, List<Vehicle>> vehiclesAtLanes) {
-        this.parkingLanes = lanes;
+    private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane, List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes) {
+        this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = vehiclesAtLanes;
+        this.availableSpaceAtLanes = availableSpaceAtLanes;
     }
 
     public List<ParkingLane> getParkingLanes() {
@@ -41,7 +45,7 @@ public class ParkingSchedule {
             List<Vehicle> copiedVehicles = new ArrayList<>(vehiclesAtLanes.get(lane));
             vehiclesAtLanesCopy.put(lane, copiedVehicles);
         }
-        return new ParkingSchedule(parkingLanes, vehicles, vehiclesAtLanesCopy);
+        return new ParkingSchedule(parkingLanes, vehicles, vehiclesAtLanesCopy, new HashMap<>(availableSpaceAtLanes));
     }
 
     public boolean parkVehicle(Vehicle vehicle, ParkingLane parkingLane) {
@@ -59,7 +63,7 @@ public class ParkingSchedule {
             }
         }
 
-        double availableSpace = parkingLane.getAvailableSpace();
+        double availableSpace = availableSpaceAtLanes.get(parkingLane);
         if (availableSpace - lengthOfVehicle < 0) {
             return false;
         }
@@ -87,11 +91,11 @@ public class ParkingSchedule {
             vehiclesAtLanes.put(lane, vehicles);
         }
 
-        double availableSpace = lane.getAvailableSpace();
+        double availableSpace = availableSpaceAtLanes.get(lane);
         if (vehicles.size() == 0) {
-            lane.setAvailableSpace(availableSpace - vehicle.getLengthOfVehicle());
+            availableSpaceAtLanes.put(lane, availableSpace - vehicle.getLengthOfVehicle());
         } else {
-            lane.setAvailableSpace(availableSpace - vehicle.getLengthOfVehicle() - DISTANCE_BETWEEN_VEHICLES);
+            availableSpaceAtLanes.put(lane, availableSpace - vehicle.getLengthOfVehicle() - DISTANCE_BETWEEN_VEHICLES);
         }
         lane.setSeriesOfParkedVehicles(vehicle.getSeriesOfVehicle());
 
@@ -103,13 +107,21 @@ public class ParkingSchedule {
         List<Vehicle> vehicles = vehiclesAtLanes.get(lane);
         vehicles.remove(vehicle);
 
-        double availableSpace = lane.getAvailableSpace();
+        double availableSpace = availableSpaceAtLanes.get(lane);
         if (vehicles.size() > 0) {
-            lane.setAvailableSpace(availableSpace + vehicle.getLengthOfVehicle() + DISTANCE_BETWEEN_VEHICLES);
+            availableSpaceAtLanes.put(lane, availableSpace + vehicle.getLengthOfVehicle() + DISTANCE_BETWEEN_VEHICLES);
         } else {
-            lane.setAvailableSpace(lane.getLengthOfLane());
+            availableSpaceAtLanes.put(lane, lane.getLengthOfLane());
             lane.setSeriesOfParkedVehicles(VEHICLE_SERIES_NOT_DEFINED);
         }
+    }
+
+    public double getAvailableSpaceAt(ParkingLane lane) {
+        return availableSpaceAtLanes.get(lane);
+    }
+
+    public boolean isParkingLaneFull(ParkingLane lane) {
+        return availableSpaceAtLanes.get(lane) <= DISTANCE_BETWEEN_VEHICLES;
     }
 
     private int findPosition(Vehicle vehicle, List<Vehicle> vehicles) {

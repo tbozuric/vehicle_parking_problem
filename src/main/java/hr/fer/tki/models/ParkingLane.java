@@ -1,11 +1,10 @@
 package hr.fer.tki.models;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class ParkingLane implements Comparable<ParkingLane> {
+public class ParkingLane {
     private static int counter = 0;
     public static final int VEHICLE_SERIES_NOT_DEFINED = -1;
     public static final double DISTANCE_BETWEEN_VEHICLES = 0.5;
@@ -14,7 +13,7 @@ public class ParkingLane implements Comparable<ParkingLane> {
     private int lengthOfLane;
     private int vehicleSeries;
 
-    private double availableSpace;
+//    private double availableSpace;
 
     /**
      * Parking lanes that block this one.
@@ -25,7 +24,7 @@ public class ParkingLane implements Comparable<ParkingLane> {
         this.id = counter++;
         this.vehicleSeries = VEHICLE_SERIES_NOT_DEFINED;
         this.lengthOfLane = lengthOfLane;
-        this.availableSpace = lengthOfLane;
+//        this.availableSpace = lengthOfLane;
         this.blockingParkingLanes = new ArrayList<>();
     }
 
@@ -34,8 +33,8 @@ public class ParkingLane implements Comparable<ParkingLane> {
         return id;
     }
 
-    public int getLengthOfLane() {
-        return lengthOfLane;
+    public double getLengthOfLane() {
+        return (double) lengthOfLane;
     }
 
     public int getVehicleSeries() {
@@ -62,35 +61,23 @@ public class ParkingLane implements Comparable<ParkingLane> {
         blockingParkingLanes.add(blockingParkingLane);
     }
 
-    public boolean isParkingLaneFull() {
-        return availableSpace <= DISTANCE_BETWEEN_VEHICLES;
-    }
-
-    public double getAvailableSpace() {
-        return availableSpace;
-    }
-
-    public void setAvailableSpace(double availableSpace) {
-        this.availableSpace = availableSpace;
-    }
-
     public void setSeriesOfParkedVehicles(int series) {
         if (vehicleSeries == VEHICLE_SERIES_NOT_DEFINED) {
             vehicleSeries = series;
         }
     }
 
-    private int getNumberOfBlockingLanes() {
+    public int getNumberOfBlockingLanes() {
         return blockingParkingLanes.size();
     }
 
-    @Override
-    public int compareTo(ParkingLane other) {
-        return Comparator.comparingInt(ParkingLane::getNumberOfBlockingLanes)
-                .thenComparingDouble(ParkingLane::getAvailableSpace)
-                .thenComparingInt(ParkingLane::getId)
-                .compare(this, other);
-    }
+//    @Override
+//    public int compareTo(ParkingLane other) {
+//        return Comparator.comparingInt(ParkingLane::getNumberOfBlockingLanes)
+//                .thenComparingDouble(ParkingLane::getAvailableSpace)
+//                .thenComparingInt(ParkingLane::getId)
+//                .compare(this, other);
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -59,7 +59,7 @@ public class GoalFunctionEvaluator {
 
         f3 = () -> parkingLanes.stream()
                 .filter(parkingLane -> parkingSchedule.getVehiclesAt(parkingLane).size() != 0)
-                .mapToDouble(ParkingLane::getAvailableSpace)
+                .mapToDouble(parkingSchedule::getAvailableSpaceAt)
                 .sum();
 
 
@@ -126,7 +126,7 @@ public class GoalFunctionEvaluator {
 
         double p1 = pow(numberOfParkingLanes - 1, -1);
         double p2 = pow(numberOfParkingLanes, -1);
-        double p3 = pow(parkingLanes.stream().mapToInt(ParkingLane::getLengthOfLane).sum() -
+        double p3 = pow(parkingLanes.stream().mapToDouble(ParkingLane::getLengthOfLane).sum() -
                 vehicles.stream().mapToInt(Vehicle::getLengthOfVehicle).sum(), -1);
 
         return f1.get() * p1 + f2.get() * p2 + f3.get() * p3;
