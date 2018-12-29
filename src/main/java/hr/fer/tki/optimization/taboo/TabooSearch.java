@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class TabooSearch extends AbstractOptimizationAlgorithm {
 
     private static final int ITERATION_STOP_CONDITION = 500;
-    private static final int TABOO_DURATION = 10;
+    private static final int TABOO_DURATION = 8;
     private static final boolean FIND_ONLY_NEIGHBOURS_WITH_SAME_SERIES = false;
 
     private Map<Vehicle, Integer> taboo;
@@ -48,7 +48,7 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
             SwappingVehiclesPair pairUsedForSwapping = null;
             for (SwappingVehiclesPair pair : swappingVehiclesPairs) {
                 ParkingSchedule neighbour = createNeighbour(pair, currentSchedule);
-                if (neighbourIsValid(neighbour)) {
+                if (!neighbourIsValid(neighbour)) {
                     continue;
                 }
                 garage.setParkingSchedule(neighbour);
