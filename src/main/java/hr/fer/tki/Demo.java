@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 public class Demo {
 
     public static void main(String[] args) throws FileNotFoundException {
-        Garage garage = InstanceParser.parseInstance("src/main/resources/instanca1.txt");
+        Garage garage = InstanceParser.parseInstance("src/main/resources/instanca3.txt");
         GreedyParkingAlgorithm parkingAlgorithm = new GreedyParkingAlgorithm(garage);
         parkingAlgorithm.parkVehiclesInTheGarage();
 
@@ -36,6 +36,6 @@ public class Demo {
         }
         System.out.println("TABOO VALID: " + validatorResult.isValid());
 
-        GarageOutputWriter.printGarageToFile("src/main/resources/output1.txt", garage);
+        GarageOutputWriter.printGarageToFile("src/main/resources/output3.txt", garage);
     }
 }

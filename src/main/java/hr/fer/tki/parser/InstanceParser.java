@@ -71,10 +71,10 @@ public class InstanceParser {
                 break;
 
             int[] blockingIndices = parseIntArray(line);
-            ParkingLane blocking = parkingLanes.get(blockingIndices[0]);
+            ParkingLane blocking = parkingLanes.get(blockingIndices[0] - 1);
 
             for (int i = 1; i < blockingIndices.length; i++) {
-                ParkingLane blocked = parkingLanes.get(blockingIndices[i]);
+                ParkingLane blocked = parkingLanes.get(blockingIndices[i] - 1);
                 blocked.addBlockingParkingLane(blocking);
             }
         }
