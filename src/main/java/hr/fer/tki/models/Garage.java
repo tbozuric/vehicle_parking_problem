@@ -12,15 +12,13 @@ public class Garage {
      * columns => parkingLanes
      */
     private Boolean[][] parkingPermissions;
-    private List<ParkingLane> parkingLanes;
-    private List<Vehicle> vehicles;
+    private ParkingSchedule parkingSchedule;
 
     public Garage(int numberOfParkingLanes, int numberOfVehicles, List<ParkingLane> parkingLanes,
                   List<Vehicle> vehicles, Boolean[][] parkingPermissions) {
         this.numberOfParkingLanes = numberOfParkingLanes;
         this.numberOfVehicles = numberOfVehicles;
-        this.parkingLanes = parkingLanes;
-        this.vehicles = vehicles;
+        this.parkingSchedule = new ParkingSchedule(parkingLanes, vehicles);
         this.parkingPermissions = parkingPermissions;
     }
 
@@ -28,40 +26,20 @@ public class Garage {
         return numberOfParkingLanes;
     }
 
-    public void setNumberOfParkingLanes(int numberOfParkingLanes) {
-        this.numberOfParkingLanes = numberOfParkingLanes;
-    }
-
     public int getNumberOfVehicles() {
         return numberOfVehicles;
     }
 
-    public void setNumberOfVehicles(int numberOfVehicles) {
-        this.numberOfVehicles = numberOfVehicles;
+    public ParkingSchedule getParkingSchedule() {
+        return parkingSchedule;
     }
 
-    public List<ParkingLane> getParkingLanes() {
-        return parkingLanes;
-    }
-
-    public void setParkingLanes(List<ParkingLane> parkingLanes) {
-        this.parkingLanes = parkingLanes;
-    }
-
-    public List<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
-    public void setVehicles(List<Vehicle> vehicles) {
-        this.vehicles = vehicles;
+    public void setParkingSchedule(ParkingSchedule parkingSchedule) {
+        this.parkingSchedule = parkingSchedule;
     }
 
     public Boolean[][] getParkingPermissions() {
         return parkingPermissions;
-    }
-
-    public void setParkingPermissions(Boolean[][] parkingPermissions) {
-        this.parkingPermissions = parkingPermissions;
     }
 
     public int getNumberOfParkingLinesWhereCanBeParked(int vehicleId) {
@@ -89,5 +67,4 @@ public class Garage {
 
         return indicesOfParkingLanes;
     }
-
 }

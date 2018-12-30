@@ -2,6 +2,7 @@ package hr.fer.tki.validator;
 
 import hr.fer.tki.models.Garage;
 import hr.fer.tki.models.ParkingLane;
+import hr.fer.tki.models.ParkingSchedule;
 import hr.fer.tki.models.Vehicle;
 
 import java.util.HashSet;
@@ -35,10 +36,12 @@ public class GarageValidator {
     }
 
     private void validateAllVehiclesAtExactlyOneLocation() {
+        ParkingSchedule parkingSchedule = garage.getParkingSchedule();
+
         Set<Vehicle> distinctVehicles = new HashSet<>();
         int vehiclesCount = 0;
-        for (ParkingLane lane : garage.getParkingLanes()) {
-            List<Vehicle> parkedVehicles = lane.getParkedVehicles();
+        for (ParkingLane lane : parkingSchedule.getParkingLanes()) {
+            List<Vehicle> parkedVehicles = parkingSchedule.getVehiclesAt(lane);
             if (parkedVehicles == null)
                 continue;
 
@@ -60,8 +63,9 @@ public class GarageValidator {
     }
 
     private void validateEveryLaneContainsSameSeriesVehicles() {
-        garage.getParkingLanes().forEach(lane -> {
-            Object[] distinctSeries = lane.getParkedVehicles().stream().map(Vehicle::getSeriesOfVehicle).distinct().toArray();
+        ParkingSchedule parkingSchedule = garage.getParkingSchedule();
+        parkingSchedule.getParkingLanes().forEach(lane -> {
+            Object[] distinctSeries = parkingSchedule.getVehiclesAt(lane).stream().map(Vehicle::getSeriesOfVehicle).distinct().toArray();
             if (distinctSeries.length > 1) {
                 validatorResult.addViolatedRestriction("Lane contains vehicles of different series.");
             }
@@ -69,11 +73,12 @@ public class GarageValidator {
     }
 
     private void validateVehiclesAreInLanesWithCorrectPermission() {
-        int numberOfLanes = garage.getParkingLanes().size();
+        ParkingSchedule parkingSchedule = garage.getParkingSchedule();
+        int numberOfLanes = parkingSchedule.getParkingLanes().size();
         for (int laneIndex = 0; laneIndex < numberOfLanes; laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
-            for (Vehicle vehicle : lane.getParkedVehicles()) {
-                int vehicleIndex = garage.getVehicles().indexOf(vehicle);
+            ParkingLane lane = parkingSchedule.getParkingLanes().get(laneIndex);
+            for (Vehicle vehicle : parkingSchedule.getVehiclesAt(lane)) {
+                int vehicleIndex = parkingSchedule.getVehicles().indexOf(vehicle);
 
                 if (garage.getParkingPermissions()[vehicleIndex][laneIndex].equals(false)) {
                     validatorResult.addViolatedRestriction(String.format("Wrong vehicles parked at lane %d.", vehicleIndex));
@@ -83,10 +88,11 @@ public class GarageValidator {
     }
 
     private void validateLanesAreNotOverloaded() {
+        ParkingSchedule parkingSchedule = garage.getParkingSchedule();
         for (int laneIndex = 0; laneIndex < garage.getNumberOfParkingLanes(); laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
+            ParkingLane lane = parkingSchedule.getParkingLanes().get(laneIndex);
 
-            List<Vehicle> parkedVehicles = lane.getParkedVehicles();
+            List<Vehicle> parkedVehicles = parkingSchedule.getVehiclesAt(lane);
             int numberOfParked = parkedVehicles.size();
 
             int parkedLength = parkedVehicles.stream().mapToInt(Vehicle::getLengthOfVehicle).sum();
@@ -101,11 +107,13 @@ public class GarageValidator {
     }
 
     private void validateVehiclesTimesAreSortedCorrectly() {
+        ParkingSchedule parkingSchedule = garage.getParkingSchedule();
+
         for (int laneIndex = 0; laneIndex < garage.getNumberOfParkingLanes(); laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
+            ParkingLane lane = parkingSchedule.getParkingLanes().get(laneIndex);
 
             int time = -1;
-            for (Vehicle vehicle : lane.getParkedVehicles()) {
+            for (Vehicle vehicle : parkingSchedule.getVehiclesAt(lane)) {
                 int departureTime = vehicle.getDepartureTime();
 
                 if (time >= departureTime) {
@@ -117,16 +125,17 @@ public class GarageValidator {
     }
 
     private void validateBlockingTracksAreBeforeBlockedOnes() {
+        ParkingSchedule parkingSchedule = garage.getParkingSchedule();
         for (int laneIndex = 0; laneIndex < garage.getNumberOfParkingLanes(); laneIndex++) {
-            ParkingLane lane = garage.getParkingLanes().get(laneIndex);
-            List<Vehicle> vehiclesInThisLane = lane.getParkedVehicles();
+            ParkingLane lane = parkingSchedule.getParkingLanes().get(laneIndex);
+            List<Vehicle> vehiclesInThisLane = parkingSchedule.getVehiclesAt(lane);
             if (vehiclesInThisLane.isEmpty() || lane.getBlockingParkingLanes() == null)
                 continue;
 
             Vehicle firstInThis = vehiclesInThisLane.get(0);
 
             for (ParkingLane blocking : lane.getBlockingParkingLanes()) {
-                List<Vehicle> vehiclesInBlockingLanes = blocking.getParkedVehicles();
+                List<Vehicle> vehiclesInBlockingLanes = parkingSchedule.getVehiclesAt(blocking);
                 if (vehiclesInBlockingLanes.isEmpty()) {
                     continue;
                 }
