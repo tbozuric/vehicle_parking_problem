@@ -67,11 +67,7 @@ public class ParkingSchedule {
             if (parkedVehiclesOnLane != 0) {
                 Vehicle lastParkedVehicle = blockingLaneVehicles.get(parkedVehiclesOnLane - 1);
                 if (lastParkedVehicle.getDepartureTime() >= vehicle.getDepartureTime()) {
-                   // int position = findPosition(vehicle, vehicles);
-                   // if (position == parkedVehicles.size() - 1) {
-
-                        return false;
-                   // }
+                    return false;
                 }
             }
         }

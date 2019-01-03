@@ -12,7 +12,7 @@ import java.util.Set;
 public class GarageValidator {
 
     private ValidatorResult validatorResult;
-    private static int NUMBER_OF_POSSIBLE_VIOLATIONS;
+    private static final int NUMBER_OF_POSSIBLE_VIOLATIONS = 6;
     private Garage garage;
 
     private GarageValidator(Garage garage) {
@@ -34,7 +34,6 @@ public class GarageValidator {
         validateLanesAreNotOverloaded();
         validateVehiclesTimesAreSortedCorrectly();
         validateBlockingTracksAreBeforeBlockedOnes();
-        NUMBER_OF_POSSIBLE_VIOLATIONS += 6;
     }
 
     private void validateAllVehiclesAtExactlyOneLocation() {
