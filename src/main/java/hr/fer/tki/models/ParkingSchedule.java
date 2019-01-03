@@ -18,8 +18,10 @@ public class ParkingSchedule {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = new HashMap<>();
-        this.availableSpaceAtLanes = parkingLanes.stream().collect(Collectors.toMap(lane -> lane, ParkingLane::getLengthOfLane));
-        this.vehicleSeriesAtLanes = parkingLanes.stream().collect(Collectors.toMap(lane -> lane, lane -> VEHICLE_SERIES_NOT_DEFINED));
+        this.availableSpaceAtLanes = parkingLanes.stream()
+                .collect(Collectors.toMap(lane -> lane, ParkingLane::getLengthOfLane));
+        this.vehicleSeriesAtLanes = parkingLanes.stream()
+                .collect(Collectors.toMap(lane -> lane, lane -> VEHICLE_SERIES_NOT_DEFINED));
     }
 
     private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane, List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes, Map<ParkingLane, Integer> vehicleSeriesAtLanes) {

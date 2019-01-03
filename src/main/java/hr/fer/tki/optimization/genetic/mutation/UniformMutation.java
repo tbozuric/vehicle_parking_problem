@@ -1,7 +1,7 @@
 package hr.fer.tki.optimization.genetic.mutation;
 
-import hr.fer.tki.optimization.genetic.Individual;
-import hr.fer.tki.optimization.genetic.IndividualFactory;
+import hr.fer.tki.optimization.genetic.individual.IIndividual;
+import hr.fer.tki.optimization.genetic.individual.IIndividualFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +10,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class UniformMutation extends AbstractMutationAlgorithm {
     private int numberOfParkingLanes;
 
-    public UniformMutation(double probabilityOfMutation, int numberOfParkingLanes) {
-        super(probabilityOfMutation);
+    public UniformMutation(IIndividualFactory factory, double probabilityOfMutation, int numberOfParkingLanes) {
+        super(factory, probabilityOfMutation);
         this.numberOfParkingLanes = numberOfParkingLanes;
     }
 
+
     @Override
-    public Individual mutate(Individual individual) {
+    public IIndividual mutate(IIndividual individual) {
         List<Integer> values = individual.getValues();
         List<Integer> newValues = new ArrayList<>(values.size());
         for (Integer value : values) {
@@ -26,6 +27,6 @@ public class UniformMutation extends AbstractMutationAlgorithm {
                 newValues.add(value);
             }
         }
-        return IndividualFactory.createIndividual(newValues);
+        return factory.createIndividual(newValues);
     }
 }

@@ -1,8 +1,7 @@
 package hr.fer.tki.optimization.genetic.crossover;
 
-import hr.fer.tki.optimization.genetic.Individual;
-import hr.fer.tki.optimization.genetic.IndividualFactory;
-import hr.fer.tki.optimization.genetic.providers.ICrossover;
+import hr.fer.tki.optimization.genetic.individual.IIndividual;
+import hr.fer.tki.optimization.genetic.individual.IIndividualFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,13 +9,15 @@ import java.util.List;
 import java.util.PrimitiveIterator;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MultiPointCrossover implements ICrossover {
+public class MultiPointCrossover extends AbstractCrossoverAlgorithm {
 
     private int numberOfCrossoverPoints;
 
-    public MultiPointCrossover(int numberOfCrossoverPoints) {
+    public MultiPointCrossover(IIndividualFactory factory, int numberOfCrossoverPoints) {
+        super(factory);
         this.numberOfCrossoverPoints = numberOfCrossoverPoints;
     }
+
 
     public int getNumberOfCrossoverPoints() {
         return numberOfCrossoverPoints;
@@ -27,7 +28,7 @@ public class MultiPointCrossover implements ICrossover {
     }
 
     @Override
-    public Individual crossover(Individual firstParent, Individual secondParent) {
+    public IIndividual crossover(IIndividual firstParent, IIndividual secondParent) {
         List<Integer> indices = new ArrayList<>(numberOfCrossoverPoints);
         PrimitiveIterator.OfInt iterator = ThreadLocalRandom.current()
                 .ints(0, numberOfCrossoverPoints)
@@ -67,6 +68,6 @@ public class MultiPointCrossover implements ICrossover {
 
             }
         }
-        return IndividualFactory.createIndividual(newValues);
+        return factory.createIndividual(newValues);
     }
 }

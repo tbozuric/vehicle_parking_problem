@@ -1,4 +1,4 @@
-package hr.fer.tki.optimization.genetic;
+package hr.fer.tki.optimization.genetic.individual;
 
 import hr.fer.tki.models.Garage;
 import hr.fer.tki.validator.GarageValidator;
@@ -6,15 +6,26 @@ import hr.fer.tki.validator.ValidatorResult;
 
 import java.util.List;
 
-public class Individual {
-    private List<Integer> values;
+public class ParkingIndividual implements IIndividual {
 
-    public Individual(List<Integer> values) {
+
+    private List<Integer> values;
+    private Garage garage;
+
+    public ParkingIndividual(List<Integer> values, Garage garage) {
+        this.values = values;
+        this.garage = garage;
+    }
+
+
+    public void setValues(List<Integer> values) {
         this.values = values;
     }
 
-    public double calculateFitness(Garage garage) {
-        double fitness = 0.0;
+
+    @Override
+    public double calculateFitness() {
+        double fitness;
         ValidatorResult result = GarageValidator.validate(garage);
         int numberOfPossibleViolations = GarageValidator.getNumberOfPossibleViolations();
 
@@ -26,11 +37,8 @@ public class Individual {
     }
 
 
+    @Override
     public List<Integer> getValues() {
         return values;
-    }
-
-    public void setValues(List<Integer> values) {
-        this.values = values;
     }
 }

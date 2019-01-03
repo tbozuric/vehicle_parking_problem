@@ -1,24 +1,25 @@
 package hr.fer.tki.optimization.genetic.mutation;
 
-import hr.fer.tki.optimization.genetic.Individual;
-import hr.fer.tki.optimization.genetic.IndividualFactory;
-import hr.fer.tki.optimization.genetic.providers.IMutation;
+import hr.fer.tki.optimization.genetic.individual.IIndividual;
+import hr.fer.tki.optimization.genetic.individual.IIndividualFactory;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SimpleMutation implements IMutation {
+public class SimpleMutation extends AbstractMutationAlgorithm {
 
     private int numberOfParkingLanes;
     private double probabilityOfMutation;
 
-    public SimpleMutation(int numberOfParkingLanesm, double probabilityOfMutation) {
-        this.numberOfParkingLanes = numberOfParkingLanes;
+    public SimpleMutation(IIndividualFactory factory, double probabilityOfMutation, int numberOfParkingLanes) {
+        super(factory, probabilityOfMutation);
         this.probabilityOfMutation = probabilityOfMutation;
+        this.numberOfParkingLanes = numberOfParkingLanes;
     }
 
+
     @Override
-    public Individual mutate(Individual individual) {
+    public IIndividual mutate(IIndividual individual) {
 
         if (Math.random() < probabilityOfMutation) {
             int index = ThreadLocalRandom.current().nextInt(0, individual.getValues().size());
@@ -26,7 +27,7 @@ public class SimpleMutation implements IMutation {
 
             List<Integer> values = individual.getValues();
             values.set(index, newValue);
-            return IndividualFactory.createIndividual(values);
+            return factory.createIndividual(values);
         }
         return individual;
     }

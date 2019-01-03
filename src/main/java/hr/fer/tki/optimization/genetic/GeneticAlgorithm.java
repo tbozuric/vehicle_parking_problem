@@ -7,16 +7,20 @@ import hr.fer.tki.optimization.genetic.providers.ISelection;
 import java.util.List;
 
 public abstract class GeneticAlgorithm implements IGeneticAlgorithm {
-    private ISelection selection;
-    private List<IMutation> mutations;
-    private List<ICrossover> crossovers;
-    private int numberOfEvaluations;
-    private double errorMinimum;
-    private double probabilityOfMutation;
 
-    public GeneticAlgorithm(ISelection selection, List<IMutation> mutations,
+     protected GeneticManager manager;
+     protected ISelection selection;
+     protected List<IMutation> mutations;
+     protected List<ICrossover> crossovers;
+     protected int numberOfEvaluations;
+     protected double errorMinimum;
+     protected double probabilityOfMutation;
+
+
+    public GeneticAlgorithm(GeneticManager manager , ISelection selection, List<IMutation> mutations,
                             List<ICrossover> crossovers, int numberOfEvaluations, double errorMinimum,
                             double probabilityOfMutation) {
+        this.manager = manager;
         this.selection = selection;
         this.mutations = mutations;
         this.crossovers = crossovers;

@@ -1,5 +1,6 @@
 package hr.fer.tki.models;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +21,15 @@ public class Garage {
         this.numberOfVehicles = numberOfVehicles;
         this.parkingSchedule = new ParkingSchedule(parkingLanes, vehicles);
         this.parkingPermissions = parkingPermissions;
+    }
+
+    public Garage(Garage another) {
+        this.numberOfParkingLanes = another.getNumberOfParkingLanes();
+        this.numberOfVehicles = another.getNumberOfVehicles();
+        ParkingSchedule parkingSchedule = another.getParkingSchedule();
+        this.parkingSchedule = new ParkingSchedule(new ArrayList<>(parkingSchedule.getParkingLanes()),
+                new ArrayList<>(parkingSchedule.getVehicles()));
+        this.parkingPermissions = another.getParkingPermissions();
     }
 
     public int getNumberOfParkingLanes() {

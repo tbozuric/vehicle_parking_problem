@@ -1,7 +1,7 @@
 package hr.fer.tki.optimization.genetic.providers;
 
-import hr.fer.tki.optimization.genetic.Individual;
+import hr.fer.tki.optimization.genetic.individual.IIndividual;
 
 public interface ICrossover {
-    Individual crossover(Individual firstParent, Individual secondParent);
+    IIndividual crossover(IIndividual firstParent, IIndividual secondParent);
 }
