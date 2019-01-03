@@ -42,8 +42,8 @@ public class GoalFunctionEvaluator {
             int output = 0;
             int size = parkingLanes.size();
             for (int i = 0; i < size - 1; i++) {
-                int vehicleSeriesOfParkingLane = parkingSchedule.getSeriesOfParkedVeihclesAtLane(parkingLanes.get(i));
-                int vehicleSeriesOfOtherParkingLane = parkingSchedule.getSeriesOfParkedVeihclesAtLane(parkingLanes.get(i + 1));
+                int vehicleSeriesOfParkingLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(parkingLanes.get(i));
+                int vehicleSeriesOfOtherParkingLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(parkingLanes.get(i + 1));
                 if (vehicleSeriesOfParkingLane != -1 && vehicleSeriesOfOtherParkingLane != -1) {
                     if (vehicleSeriesOfParkingLane != vehicleSeriesOfOtherParkingLane) {
                         output += 1;

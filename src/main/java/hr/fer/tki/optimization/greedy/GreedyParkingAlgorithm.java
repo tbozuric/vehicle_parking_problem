@@ -13,8 +13,11 @@ import static hr.fer.tki.models.ParkingSchedule.VEHICLE_SERIES_NOT_DEFINED;
 
 public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
 
+    private Map<Vehicle, Integer> canBeParkedFrequency;
+
     public GreedyParkingAlgorithm(Garage garage) {
         super(garage, "Greedy algorithm");
+        canBeParkedFrequency = new HashMap<>();
     }
 
     @Override
@@ -29,26 +32,41 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
                 vehicles.stream().collect(Collectors.groupingBy(Vehicle::getSeriesOfVehicle));
 
         Set<SeriesParkingLanesTuple> tuples = new TreeSet<>();
+
         for (Integer series : vehicleListGroupedBySeries.keySet()) {
-            Vehicle someVehicleFromSeries = vehicleListGroupedBySeries.get(series).get(0);
-            tuples.add(new SeriesParkingLanesTuple(series,
-                    garage.getNumberOfParkingLinesWhereCanBeParked(someVehicleFromSeries.getId())));
+
+            double average = 0.0;
+            List<Vehicle> vehiclesInSeries = vehicleListGroupedBySeries.get(series);
+            for (Vehicle vehicle : vehiclesInSeries) {
+                int numberOfParkingLanesWhereCanBeParked = garage.getNumberOfParkingLinesWhereCanBeParked(vehicle.getId());
+                average += numberOfParkingLanesWhereCanBeParked;
+                canBeParkedFrequency.put(vehicle, numberOfParkingLanesWhereCanBeParked);
+
+            }
+            average /= (double) vehiclesInSeries.size();
+
+            tuples.add(new SeriesParkingLanesTuple(series, average));
         }
 
         for (SeriesParkingLanesTuple tuple : tuples) {
             int series = tuple.getSeriesOfVehicle();
             // vozila ce automatski biti sortirana po vremenu kretanja, zatim po tipu rasporeda pa po duzini da
             // se automatski redaju da ostvare cim vise profita u fji dobrote
-            Set<Vehicle> sortedVehicles = new TreeSet<>(vehicleListGroupedBySeries.get(series));
+
+            Set<Vehicle> sortedVehicles = new TreeSet<>(new VehiclesComparator(canBeParkedFrequency));
+            sortedVehicles.addAll(vehicleListGroupedBySeries.get(series));
+
+
             for (Vehicle vehicle : sortedVehicles) {
                 int[] indicesOfParkingLanes = garage.getIdsOfParkingLanesWhereCanBeParked(vehicle.getId());
                 Set<ParkingLane> parkingLanes = new TreeSet<>(new GreedyLaneComparator(parkingSchedule));
                 for (int index : indicesOfParkingLanes) {
                     ParkingLane lane = allParkingLanes.get(index);
                     // uzmi u obzir parkirnu traku ako nije puna i ako na njoj nije parkirano nijedno vozilo ili
-                    // ako trenutno vozilo ima istu seriju kao i vec pakrirano
-                    int seriesOfParkedVeihclesAtLane = parkingSchedule.getSeriesOfParkedVeihclesAtLane(lane);
-                    if (!parkingSchedule.isParkingLaneFull(lane) && (seriesOfParkedVeihclesAtLane == VEHICLE_SERIES_NOT_DEFINED
+                    // ako trenutno vozilo ima istu seriju kao i vec parkirano
+                    int seriesOfParkedVeihclesAtLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(lane);
+                    if (!parkingSchedule.isParkingLaneFull(lane) && (seriesOfParkedVeihclesAtLane
+                            == VEHICLE_SERIES_NOT_DEFINED
                             || seriesOfParkedVeihclesAtLane == vehicle.getSeriesOfVehicle())) {
                         parkingLanes.add(allParkingLanes.get(index));
                     }
@@ -63,6 +81,7 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
                 }
             }
         }
+
         notifyListenersAboutNewSolution("GREEDY");
         notifyAlgorithmOver();
     }
@@ -80,6 +99,35 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
             return Comparator.comparingInt(ParkingLane::getNumberOfBlockingLanes)
                     .thenComparingDouble(parkingSchedule::getAvailableSpaceAt)
                     .thenComparingInt(ParkingLane::getId)
+                    .compare(o1, o2);
+        }
+    }
+
+
+    class VehiclesComparator implements Comparator<Vehicle> {
+
+        private Map<Vehicle, Integer> parkingFrequency;
+
+        public VehiclesComparator(Map<Vehicle, Integer> parkingFrequency) {
+            this.parkingFrequency = parkingFrequency;
+        }
+
+        @Override
+        public int compare(Vehicle o1, Vehicle o2) {
+
+            Comparator<Vehicle> byParkingLines = Comparator
+                    .comparingInt(x -> parkingFrequency.get(x));
+
+            Comparator<Vehicle> byLengthOfVehicle = Collections.reverseOrder(
+                    Comparator.comparingInt(Vehicle::getLengthOfVehicle));
+
+            return Comparator
+                    .comparingInt(Vehicle::getSeriesOfVehicle)
+                    .thenComparing(byLengthOfVehicle)
+                    .thenComparing(byParkingLines)
+                    .thenComparingInt(Vehicle::getDepartureTime)
+                    .thenComparingInt(Vehicle::getTypeOfSchedule)
+                    .thenComparingInt(Vehicle::getId)
                     .compare(o1, o2);
         }
     }

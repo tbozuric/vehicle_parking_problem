@@ -14,15 +14,16 @@ import java.io.FileNotFoundException;
 public class Demo {
 
     public static void main(String[] args) throws FileNotFoundException {
-        Garage garage = InstanceParser.parseInstance("src/main/resources/instanca3.txt");
+        Garage garage = InstanceParser.parseInstance("src/main/resources/instanca1.txt");
         GreedyParkingAlgorithm parkingAlgorithm = new GreedyParkingAlgorithm(garage);
         parkingAlgorithm.parkVehiclesInTheGarage();
 
         ValidatorResult validatorResult = GarageValidator.validate(garage);
-        for(String restriction : validatorResult.getViolatedRestrictions()){
+        for (String restriction : validatorResult.getViolatedRestrictions()) {
             System.out.println(restriction);
         }
         System.out.println("GREEDY VALID: " + validatorResult.isValid());
+
 
         GarageDrawer.drawGarage(garage);
 
@@ -31,7 +32,7 @@ public class Demo {
         GarageDrawer.drawGarage(garage);
 
         validatorResult = GarageValidator.validate(garage);
-        for(String restriction : validatorResult.getViolatedRestrictions()){
+        for (String restriction : validatorResult.getViolatedRestrictions()) {
             System.out.println(restriction);
         }
         System.out.println("TABOO VALID: " + validatorResult.isValid());

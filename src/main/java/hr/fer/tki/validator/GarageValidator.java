@@ -12,6 +12,7 @@ import java.util.Set;
 public class GarageValidator {
 
     private ValidatorResult validatorResult;
+    private static int NUMBER_OF_POSSIBLE_VIOLATIONS;
     private Garage garage;
 
     private GarageValidator(Garage garage) {
@@ -33,6 +34,7 @@ public class GarageValidator {
         validateLanesAreNotOverloaded();
         validateVehiclesTimesAreSortedCorrectly();
         validateBlockingTracksAreBeforeBlockedOnes();
+        NUMBER_OF_POSSIBLE_VIOLATIONS += 6;
     }
 
     private void validateAllVehiclesAtExactlyOneLocation() {
@@ -57,7 +59,7 @@ public class GarageValidator {
             validatorResult.addViolatedRestriction("Some vehicles are duplicated.");
         }
 
-        if (distinctVehicles.size() != actualVehiclesNumber) {
+        if (distinctVehicles.size() != vehiclesCount) {
             validatorResult.addViolatedRestriction("Some vehicles are duplicated.");
         }
     }
@@ -147,5 +149,9 @@ public class GarageValidator {
                 }
             }
         }
+    }
+
+    public static int getNumberOfPossibleViolations() {
+        return NUMBER_OF_POSSIBLE_VIOLATIONS;
     }
 }

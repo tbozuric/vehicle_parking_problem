@@ -58,6 +58,7 @@ public class ParkingSchedule {
 
     public boolean parkVehicle(Vehicle vehicle, ParkingLane parkingLane) {
         int lengthOfVehicle = vehicle.getLengthOfVehicle();
+        List<Vehicle> parkedVehicles = getVehiclesAt(parkingLane);
 
         List<ParkingLane> blockingParkingLanes = parkingLane.getBlockingParkingLanes();
         for (ParkingLane blockingLane : blockingParkingLanes) {
@@ -66,7 +67,11 @@ public class ParkingSchedule {
             if (parkedVehiclesOnLane != 0) {
                 Vehicle lastParkedVehicle = blockingLaneVehicles.get(parkedVehiclesOnLane - 1);
                 if (lastParkedVehicle.getDepartureTime() >= vehicle.getDepartureTime()) {
-                    return false;
+                   // int position = findPosition(vehicle, vehicles);
+                   // if (position == parkedVehicles.size() - 1) {
+
+                        return false;
+                   // }
                 }
             }
         }
@@ -76,7 +81,6 @@ public class ParkingSchedule {
             return false;
         }
 
-        List<Vehicle> parkedVehicles = getVehiclesAt(parkingLane);
         int numberOfParkedVehicles = parkedVehicles.size();
         if (numberOfParkedVehicles >= 1) {
             if (availableSpace - lengthOfVehicle - DISTANCE_BETWEEN_VEHICLES < 0) {
@@ -93,11 +97,7 @@ public class ParkingSchedule {
     }
 
     public void addVehicleToLane(Vehicle vehicle, ParkingLane lane) {
-        List<Vehicle> vehicles = vehiclesAtLanes.get(lane);
-        if (vehicles == null) {
-            vehicles = new ArrayList<>();
-            vehiclesAtLanes.put(lane, vehicles);
-        }
+        List<Vehicle> vehicles = vehiclesAtLanes.computeIfAbsent(lane, k -> new ArrayList<>());
 
         double availableSpace = availableSpaceAtLanes.get(lane);
         if (vehicles.size() == 0) {
@@ -132,7 +132,7 @@ public class ParkingSchedule {
         return availableSpaceAtLanes.get(lane) <= DISTANCE_BETWEEN_VEHICLES;
     }
 
-    public int getSeriesOfParkedVeihclesAtLane(ParkingLane lane) {
+    public int getSeriesOfParkedVehiclesAtLane(ParkingLane lane) {
         return vehicleSeriesAtLanes.get(lane);
     }
 
