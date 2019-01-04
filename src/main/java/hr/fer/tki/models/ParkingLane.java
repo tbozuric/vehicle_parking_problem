@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ParkingLane {
-    private static int counter = 1;
+    private static int counter = 0;
     static final double DISTANCE_BETWEEN_VEHICLES = 0.5;
 
     private int id;

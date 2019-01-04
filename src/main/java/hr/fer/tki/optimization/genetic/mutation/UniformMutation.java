@@ -10,14 +10,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class UniformMutation extends AbstractMutationAlgorithm {
     private int numberOfParkingLanes;
 
-    public UniformMutation(IIndividualFactory factory, double probabilityOfMutation, int numberOfParkingLanes) {
-        super(factory, probabilityOfMutation);
+    public UniformMutation(IIndividualFactory factory, int numberOfParkingLanes) {
+        super(factory);
         this.numberOfParkingLanes = numberOfParkingLanes;
     }
 
 
     @Override
-    public IIndividual mutate(IIndividual individual) {
+    public IIndividual mutate(IIndividual individual, double probabilityOfMutation) {
         List<Integer> values = individual.getValues();
         List<Integer> newValues = new ArrayList<>(values.size());
         for (Integer value : values) {

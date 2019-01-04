@@ -1,6 +1,8 @@
 package hr.fer.tki.optimization.genetic.individual;
 
+import hr.fer.tki.function.GoalFunctionEvaluator;
 import hr.fer.tki.models.Garage;
+import hr.fer.tki.models.ParkingSchedule;
 import hr.fer.tki.validator.GarageValidator;
 import hr.fer.tki.validator.ValidatorResult;
 
@@ -10,6 +12,7 @@ public class ParkingIndividual implements IIndividual {
 
 
     private List<Integer> values;
+    //TODO: moyda promijeniti da svaka jedinka ima instancu na raspored ne garazu...
     private Garage garage;
 
     public ParkingIndividual(List<Integer> values, Garage garage) {
@@ -26,13 +29,26 @@ public class ParkingIndividual implements IIndividual {
     @Override
     public double calculateFitness() {
         double fitness;
+
+        ParkingSchedule parkingSchedule = garage.getParkingSchedule();
+        int indexOfVehicle = 0;
+
+        if (parkingSchedule.getNumberOfParkedVehicles() == 0) {
+
+
+            for (Integer integer : values) {
+                parkingSchedule.parkVehicle(parkingSchedule.getVehicles().get(indexOfVehicle++),
+                        parkingSchedule.getParkingLanes().get(integer));
+            }
+        }
+
         ValidatorResult result = GarageValidator.validate(garage);
         int numberOfPossibleViolations = GarageValidator.getNumberOfPossibleViolations();
+        int numberOfViolatedRestrictions = result.getViolatedRestrictions().size();
+        int award = (numberOfPossibleViolations - numberOfViolatedRestrictions) * 2;
 
-        int award = (numberOfPossibleViolations - result.getViolatedRestrictions().size()) * 10_000;
-        int penalty = Integer.MIN_VALUE;
-
-        fitness = award + penalty;
+        GoalFunctionEvaluator evaluator = new GoalFunctionEvaluator(garage);
+        fitness = award + evaluator.evaluateMaximizationProblem() - evaluator.evaluateMinimizationProblem();
         return fitness;
     }
 
@@ -40,5 +56,9 @@ public class ParkingIndividual implements IIndividual {
     @Override
     public List<Integer> getValues() {
         return values;
+    }
+
+    public Garage getGarage() {
+        return garage;
     }
 }

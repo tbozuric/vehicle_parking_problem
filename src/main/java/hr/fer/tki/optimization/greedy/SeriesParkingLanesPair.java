@@ -3,19 +3,19 @@ package hr.fer.tki.optimization.greedy;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class SeriesParkingLanesTuple implements Comparable<SeriesParkingLanesTuple> {
+public class SeriesParkingLanesPair implements Comparable<SeriesParkingLanesPair> {
     private int seriesOfVehicle;
     private double averageNumberOfParkingLines;
 
-    public SeriesParkingLanesTuple(int seriesOfVehicle, double averageNumberOfParkingLines) {
+    public SeriesParkingLanesPair(int seriesOfVehicle, double averageNumberOfParkingLines) {
         this.seriesOfVehicle = seriesOfVehicle;
         this.averageNumberOfParkingLines = averageNumberOfParkingLines;
     }
 
     @Override
-    public int compareTo(SeriesParkingLanesTuple o) {
-        return Comparator.comparingDouble(SeriesParkingLanesTuple::getAverageNumberOfParkingLines)
-                .thenComparingInt(SeriesParkingLanesTuple::getSeriesOfVehicle).compare(this, o);
+    public int compareTo(SeriesParkingLanesPair o) {
+        return Comparator.comparingDouble(SeriesParkingLanesPair::getAverageNumberOfParkingLines)
+                .thenComparingInt(SeriesParkingLanesPair::getSeriesOfVehicle).compare(this, o);
     }
 
     public int getSeriesOfVehicle() {
@@ -38,7 +38,7 @@ public class SeriesParkingLanesTuple implements Comparable<SeriesParkingLanesTup
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SeriesParkingLanesTuple that = (SeriesParkingLanesTuple) o;
+        SeriesParkingLanesPair that = (SeriesParkingLanesPair) o;
         return seriesOfVehicle == that.seriesOfVehicle;
     }
 

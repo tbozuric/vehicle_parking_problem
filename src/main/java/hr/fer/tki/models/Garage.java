@@ -1,6 +1,5 @@
 package hr.fer.tki.models;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,8 +26,7 @@ public class Garage {
         this.numberOfParkingLanes = another.getNumberOfParkingLanes();
         this.numberOfVehicles = another.getNumberOfVehicles();
         ParkingSchedule parkingSchedule = another.getParkingSchedule();
-        this.parkingSchedule = new ParkingSchedule(new ArrayList<>(parkingSchedule.getParkingLanes()),
-                new ArrayList<>(parkingSchedule.getVehicles()));
+        this.parkingSchedule = parkingSchedule.deepcopy();
         this.parkingPermissions = another.getParkingPermissions();
     }
 

@@ -29,12 +29,6 @@ public class GeneticManager {
         return manager;
     }
 
-
-    public void evaluate(int indexOfVehicle, int indexOfParkingLane) {
-        //parkingSchedule.parkVehicle(vehicles.get(indexOfVehicle), parkingLanes.get(indexOfParkingLane));
-    }
-
-
     public List<IIndividual> getInitialPopulation() {
         return factory.createPopulation(sizeOfPopulation);
     }
@@ -69,7 +63,7 @@ public class GeneticManager {
         if (size > 1) {
             double[] probabilities = new double[size];
             for (int i = 0; i < size; i++) {
-                probabilities[i] = 1.0 / size;
+                probabilities[i] = 1.0 / (double) size;
             }
             double cumulativeProbability = 0.0;
             for (int i = 0; i < size; i++) {
@@ -82,9 +76,9 @@ public class GeneticManager {
         return crossovers.get(0).crossover(parentFirst, parentSecond);
     }
 
-    public IIndividual mutate(List<IMutation> mutation, IIndividual individual) {
+    public IIndividual mutate(List<IMutation> mutations, IIndividual individual, double probabilityOfMutation) {
         double p = Math.random();
-        int size = mutation.size();
+        int size = mutations.size();
 
         if (size < 1) {
             throw new IllegalArgumentException("You must provide some mutation system!");
@@ -92,13 +86,27 @@ public class GeneticManager {
 
         if (size > 1) {
             double[] probabilities = new double[size];
+            probabilities[0] = 0.5 / size;
+            //najmanja vjerojanost je suffle mutacije jer je to nasumicno pretrazivanje
+            double difference = (1 - 0.5) / (double) (size - 1);
+
+            for (int i = 1; i < size; i++) {
+                probabilities[i] = (1.0 + difference) / (double) size;
+            }
+//            double[] probabilities = new double[size];
+//            for (int i = 0; i < size; i++) {
+//                probabilities[i] = 1.0 / (double) size;
+//            }
+
+            double cumulativeProbability = 0.0;
             for (int i = 0; i < size; i++) {
-                probabilities[i] = 1.0 / size;
+                cumulativeProbability += probabilities[i];
+                if (p <= cumulativeProbability) {
+                    return mutations.get(i).mutate(individual, probabilityOfMutation);
+                }
             }
         }
-
-
-        return mutation.get(0).mutate(individual);
+        return mutations.get(0).mutate(individual, probabilityOfMutation);
     }
 
     public double calculateFitness(IIndividual individual) {

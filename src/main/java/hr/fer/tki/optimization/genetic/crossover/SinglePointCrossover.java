@@ -29,7 +29,6 @@ public class SinglePointCrossover extends AbstractCrossoverAlgorithm {
                 newValues.add(secondParentValues.get(i));
             }
         }
-
         return factory.createIndividual(newValues);
     }
 }

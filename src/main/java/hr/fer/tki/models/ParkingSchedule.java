@@ -14,6 +14,7 @@ public class ParkingSchedule {
     private Map<ParkingLane, Double> availableSpaceAtLanes;
     private Map<ParkingLane, Integer> vehicleSeriesAtLanes;
 
+
     public ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles) {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
@@ -22,9 +23,12 @@ public class ParkingSchedule {
                 .collect(Collectors.toMap(lane -> lane, ParkingLane::getLengthOfLane));
         this.vehicleSeriesAtLanes = parkingLanes.stream()
                 .collect(Collectors.toMap(lane -> lane, lane -> VEHICLE_SERIES_NOT_DEFINED));
+
     }
 
-    private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane, List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes, Map<ParkingLane, Integer> vehicleSeriesAtLanes) {
+    private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane,
+            List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes, Map<ParkingLane,
+            Integer> vehicleSeriesAtLanes) {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = vehiclesAtLanes;
@@ -148,5 +152,25 @@ public class ParkingSchedule {
             }
         }
         return position;
+    }
+
+    public List<Integer> getParkedVehiclesOnLanesAsArray() {
+        int[] parkedVehicles = new int[vehicles.size()];
+        for (Map.Entry<ParkingLane, List<Vehicle>> entry : vehiclesAtLanes.entrySet()) {
+            ParkingLane lane = entry.getKey();
+            List<Vehicle> vehicles = entry.getValue();
+            for (Vehicle vehicle : vehicles) {
+                parkedVehicles[vehicle.getId()] = lane.getId();
+            }
+        }
+        return Arrays.stream(parkedVehicles).boxed().collect(Collectors.toList());
+    }
+
+    public int getNumberOfParkedVehicles() {
+        int sum = 0;
+        for (List<Vehicle> vehicles : vehiclesAtLanes.values()) {
+            sum += vehicles.size();
+        }
+        return sum;
     }
 }

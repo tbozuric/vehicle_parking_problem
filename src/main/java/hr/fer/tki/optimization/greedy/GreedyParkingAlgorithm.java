@@ -31,7 +31,7 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
         Map<Integer, List<Vehicle>> vehicleListGroupedBySeries =
                 vehicles.stream().collect(Collectors.groupingBy(Vehicle::getSeriesOfVehicle));
 
-        Set<SeriesParkingLanesTuple> tuples = new TreeSet<>();
+        Set<SeriesParkingLanesPair> tuples = new TreeSet<>();
 
         for (Integer series : vehicleListGroupedBySeries.keySet()) {
 
@@ -45,10 +45,10 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
             }
             average /= (double) vehiclesInSeries.size();
 
-            tuples.add(new SeriesParkingLanesTuple(series, average));
+            tuples.add(new SeriesParkingLanesPair(series, average));
         }
 
-        for (SeriesParkingLanesTuple tuple : tuples) {
+        for (SeriesParkingLanesPair tuple : tuples) {
             int series = tuple.getSeriesOfVehicle();
             // vozila ce automatski biti sortirana po vremenu kretanja, zatim po tipu rasporeda pa po duzini da
             // se automatski redaju da ostvare cim vise profita u fji dobrote
@@ -64,10 +64,10 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
                     ParkingLane lane = allParkingLanes.get(index);
                     // uzmi u obzir parkirnu traku ako nije puna i ako na njoj nije parkirano nijedno vozilo ili
                     // ako trenutno vozilo ima istu seriju kao i vec parkirano
-                    int seriesOfParkedVeihclesAtLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(lane);
-                    if (!parkingSchedule.isParkingLaneFull(lane) && (seriesOfParkedVeihclesAtLane
+                    int seriesOfParkedVehiclesAtLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(lane);
+                    if (!parkingSchedule.isParkingLaneFull(lane) && (seriesOfParkedVehiclesAtLane
                             == VEHICLE_SERIES_NOT_DEFINED
-                            || seriesOfParkedVeihclesAtLane == vehicle.getSeriesOfVehicle())) {
+                            || seriesOfParkedVehiclesAtLane == vehicle.getSeriesOfVehicle())) {
                         parkingLanes.add(allParkingLanes.get(index));
                     }
                 }
@@ -86,7 +86,7 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
         notifyAlgorithmOver();
     }
 
-    class GreedyLaneComparator implements Comparator<ParkingLane> {
+    public static class GreedyLaneComparator implements Comparator<ParkingLane> {
 
         private ParkingSchedule parkingSchedule;
 
@@ -104,7 +104,7 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
     }
 
 
-    class VehiclesComparator implements Comparator<Vehicle> {
+    public static class VehiclesComparator implements Comparator<Vehicle> {
 
         private Map<Vehicle, Integer> parkingFrequency;
 
@@ -118,14 +118,11 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
             Comparator<Vehicle> byParkingLines = Comparator
                     .comparingInt(x -> parkingFrequency.get(x));
 
-            Comparator<Vehicle> byLengthOfVehicle = Collections.reverseOrder(
-                    Comparator.comparingInt(Vehicle::getLengthOfVehicle));
 
             return Comparator
                     .comparingInt(Vehicle::getSeriesOfVehicle)
-                    .thenComparing(byLengthOfVehicle)
-                    .thenComparing(byParkingLines)
                     .thenComparingInt(Vehicle::getDepartureTime)
+                    .thenComparing(byParkingLines)
                     .thenComparingInt(Vehicle::getTypeOfSchedule)
                     .thenComparingInt(Vehicle::getId)
                     .compare(o1, o2);

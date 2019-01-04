@@ -8,13 +8,13 @@ import java.util.List;
 
 public abstract class GeneticAlgorithm implements IGeneticAlgorithm {
 
-     protected GeneticManager manager;
-     protected ISelection selection;
-     protected List<IMutation> mutations;
-     protected List<ICrossover> crossovers;
-     protected int numberOfEvaluations;
-     protected double errorMinimum;
-     protected double probabilityOfMutation;
+     GeneticManager manager;
+     ISelection selection;
+     List<IMutation> mutations;
+     List<ICrossover> crossovers;
+     int numberOfEvaluations;
+     private double errorMinimum;
+     double probabilityOfMutation;
 
 
     public GeneticAlgorithm(GeneticManager manager , ISelection selection, List<IMutation> mutations,

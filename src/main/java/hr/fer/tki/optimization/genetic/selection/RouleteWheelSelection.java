@@ -1,20 +1,17 @@
 package hr.fer.tki.optimization.genetic.selection;
 
 import hr.fer.tki.optimization.genetic.individual.IIndividual;
+import hr.fer.tki.optimization.genetic.providers.ISelection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RouleteWheelSelection extends AbstractSelectionAlgorithm {
+public class RouleteWheelSelection implements ISelection {
 
-
-    public RouleteWheelSelection(List<Double> fitnessOfIndividuals, List<IIndividual> individuals) {
-        super(fitnessOfIndividuals, individuals);
-    }
 
     @Override
-    public List<IIndividual> select(int numberOfIndividuals) {
+    public List<IIndividual> select(int numberOfIndividuals, List<Double> fitnessOfIndividuals, List<IIndividual> individuals) {
         List<IIndividual> selection = new ArrayList<>(1);
 
         double sum = fitnessOfIndividuals.stream().mapToDouble(Double::doubleValue).sum();
@@ -25,11 +22,11 @@ public class RouleteWheelSelection extends AbstractSelectionAlgorithm {
         for (int i = 0; i < size; i++) {
             current += fitnessOfIndividuals.get(i);
             if (current > pick) {
-                selection.add(this.individuals.get(i));
+                selection.add(individuals.get(i));
                 return selection;
             }
         }
-        selection.add(this.individuals.get(size - 1));
+        selection.add(individuals.get(size - 1));
         return selection;
     }
 }

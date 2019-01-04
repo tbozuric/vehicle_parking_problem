@@ -1,22 +1,20 @@
 package hr.fer.tki.optimization.genetic.individual;
 
 import hr.fer.tki.models.Garage;
-import hr.fer.tki.models.ParkingLane;
+import hr.fer.tki.optimization.greedy.GreedyParkingAlgorithm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.PrimitiveIterator;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class IndividualFactory implements IIndividualFactory {
 
     private static IndividualFactory factory;
     private Garage emptyGarage;
-    private List<ParkingLane> parkingLanes;
+
 
     private IndividualFactory(Garage emptyGarage) {
         this.emptyGarage = emptyGarage;
-        this.parkingLanes = emptyGarage.getParkingSchedule().getParkingLanes();
     }
 
 
@@ -29,19 +27,32 @@ public class IndividualFactory implements IIndividualFactory {
 
     @Override
     public List<IIndividual> createPopulation(int sizeOfPopulation) {
-        int numberOfParkingLanes = parkingLanes.size();
-        List<IIndividual> population = new ArrayList<>(sizeOfPopulation);
 
-        for (int i = 0; i < sizeOfPopulation; i++) {
-            PrimitiveIterator.OfInt iterator = ThreadLocalRandom.current()
-                    .ints(numberOfParkingLanes - 1, 0, numberOfParkingLanes)
-                    .iterator();
-            List<Integer> values = new ArrayList<>(numberOfParkingLanes);
-            for (int j = 0; j < numberOfParkingLanes; j++) {
-                values.add(iterator.nextInt());
-            }
+        List<IIndividual> population = new ArrayList<>(sizeOfPopulation);
+        Garage clone = new Garage(emptyGarage);
+
+        GreedyParkingAlgorithm parkingAlgorithm = new GreedyParkingAlgorithm(clone);
+        parkingAlgorithm.parkVehiclesInTheGarage();
+        List<Integer> parkedVehicles = clone.getParkingSchedule().getParkedVehiclesOnLanesAsArray();
+
+        population.add(new ParkingIndividual(parkedVehicles, clone));
+
+        for (int i = 1; i < sizeOfPopulation; i++) {
+            List<Integer> values = new ArrayList<>(parkedVehicles);
+            Collections.shuffle(values);
             population.add(new ParkingIndividual(values, new Garage(emptyGarage)));
         }
+
+//        for (int i = 0; i < sizeOfPopulation; i++) {
+//            PrimitiveIterator.OfInt iterator = ThreadLocalRandom.current()
+//                    .ints(numberOfParkingLanes, 0, numberOfParkingLanes)
+//                    .iterator();
+//            List<Integer> values = new ArrayList<>(numberOfParkingLanes);
+//            for (int j = 0; j < numberOfParkingLanes; j++) {
+//                values.add(iterator.nextInt());
+//            }
+//            population.add(new ParkingIndividual(values, new Garage(emptyGarage)));
+//        }
         return population;
     }
 

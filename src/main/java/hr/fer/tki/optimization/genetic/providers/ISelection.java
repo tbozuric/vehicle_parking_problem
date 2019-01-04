@@ -5,5 +5,5 @@ import hr.fer.tki.optimization.genetic.individual.IIndividual;
 import java.util.List;
 
 public interface ISelection {
-    List<IIndividual> select(int numberOfIndividuals);
+    List<IIndividual> select(int numberOfIndividuals, List<Double> fitnessOfIndividuals, List<IIndividual> individuals);
 }

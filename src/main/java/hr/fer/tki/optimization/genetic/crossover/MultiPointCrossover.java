@@ -2,12 +2,11 @@ package hr.fer.tki.optimization.genetic.crossover;
 
 import hr.fer.tki.optimization.genetic.individual.IIndividual;
 import hr.fer.tki.optimization.genetic.individual.IIndividualFactory;
+import hr.fer.tki.util.IndicesGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.PrimitiveIterator;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MultiPointCrossover extends AbstractCrossoverAlgorithm {
 
@@ -29,26 +28,21 @@ public class MultiPointCrossover extends AbstractCrossoverAlgorithm {
 
     @Override
     public IIndividual crossover(IIndividual firstParent, IIndividual secondParent) {
-        List<Integer> indices = new ArrayList<>(numberOfCrossoverPoints);
-        PrimitiveIterator.OfInt iterator = ThreadLocalRandom.current()
-                .ints(0, numberOfCrossoverPoints)
-                .distinct()
-                .iterator();
-        for (int i = 0; i < numberOfCrossoverPoints; i++) {
-            indices.add(iterator.next());
-        }
-
-        Collections.sort(indices);
 
         List<Integer> firstParentValues = firstParent.getValues();
         List<Integer> secondParentValues = secondParent.getValues();
 
         int size = firstParentValues.size();
+
+        List<Integer> indices = IndicesGenerator.uniqueRandomNumbers(size, numberOfCrossoverPoints);
+        Collections.sort(indices);
+
         List<Integer> newValues = new ArrayList<>(size);
+        indices.add(size);
+
         boolean first = true;
         int indexCounter = 0;
         int currentIndex = indices.get(indexCounter++);
-
         for (int i = 0; i < size; i++) {
             if (i < currentIndex) {
                 if (first) {
@@ -65,7 +59,6 @@ public class MultiPointCrossover extends AbstractCrossoverAlgorithm {
                 first = !first;
 
                 currentIndex = indices.get(indexCounter++);
-
             }
         }
         return factory.createIndividual(newValues);
