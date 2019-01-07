@@ -42,11 +42,13 @@ public class Demo {
         crossovers.add(new MultipleElementCrossover(factory, 2));
         crossovers.add(new MultipleElementCrossover(factory, 3));
         crossovers.add(new MultipleElementCrossover(factory, 4));
+        crossovers.add(new MultipleElementCrossover(factory, 5));
+        crossovers.add(new MultipleElementCrossover(factory, 6));
 //        crossovers.add(new MultiPointCrossover(factory, 3));
 
         GeneticAlgorithm eliminationGeneticAlgorithm = new EliminationGeneticAlgorithm(manager,
                 new TournamentSelection(3), mutations, crossovers, 10_000_000,
-                60000, 0.05
+                60000, 0.01
         );
 
         IIndividual result = eliminationGeneticAlgorithm.search();
