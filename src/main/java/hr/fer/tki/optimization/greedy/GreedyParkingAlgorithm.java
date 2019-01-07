@@ -59,7 +59,7 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
 
             for (Vehicle vehicle : sortedVehicles) {
                 int[] indicesOfParkingLanes = garage.getIdsOfParkingLanesWhereCanBeParked(vehicle.getId());
-                Set<ParkingLane> parkingLanes = new TreeSet<>(new GreedyLaneComparator(parkingSchedule));
+                TreeSet<ParkingLane> parkingLanes = new TreeSet<>(new GreedyLaneComparator(parkingSchedule));
                 for (int index : indicesOfParkingLanes) {
                     ParkingLane lane = allParkingLanes.get(index);
                     // uzmi u obzir parkirnu traku ako nije puna i ako na njoj nije parkirano nijedno vozilo ili
@@ -74,10 +74,17 @@ public class GreedyParkingAlgorithm extends AbstractOptimizationAlgorithm {
                 // parkirne linije su sortirane rastuce po broju blokirajucih linija i po slobodnom prostoru
                 // tako da se pune prvo one s najmanje blokirajucih linija pa onda one na kojima je preostalo najmanje
                 // slobodnog prostora da se minimizira broj koristenih traka
+                boolean parked = false;
                 for (ParkingLane parkingLane : parkingLanes) {
-                    if (parkingSchedule.parkVehicle(vehicle, parkingLane)) {
+                    if (parkingSchedule.parkVehicle(vehicle, parkingLane, false)) {
+                        parked = true;
                         break;
                     }
+                }
+                if (!parked && !parkingLanes.isEmpty()) {
+                    List<ParkingLane> listOfLanes = new ArrayList<>(parkingLanes);
+                    Collections.shuffle(listOfLanes);
+                    parkingSchedule.parkVehicle(vehicle, listOfLanes.get(0), true);
                 }
             }
         }

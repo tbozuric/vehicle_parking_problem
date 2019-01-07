@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ShuffleMutation extends AbstractMutationAlgorithm {
 
-
     public ShuffleMutation(IIndividualFactory factory) {
         super(factory);
     }

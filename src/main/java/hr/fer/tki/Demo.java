@@ -5,7 +5,10 @@ import hr.fer.tki.optimization.genetic.EliminationGeneticAlgorithm;
 import hr.fer.tki.optimization.genetic.GeneticAlgorithm;
 import hr.fer.tki.optimization.genetic.GeneticManager;
 import hr.fer.tki.optimization.genetic.crossover.MultiPointCrossover;
+import hr.fer.tki.optimization.genetic.crossover.MultipleElementCrossover;
+import hr.fer.tki.optimization.genetic.crossover.SingleElementCrossover;
 import hr.fer.tki.optimization.genetic.crossover.SinglePointCrossover;
+import hr.fer.tki.optimization.genetic.individual.IIndividual;
 import hr.fer.tki.optimization.genetic.individual.IndividualFactory;
 import hr.fer.tki.optimization.genetic.mutation.ShuffleMutation;
 import hr.fer.tki.optimization.genetic.mutation.SimpleMutation;
@@ -25,24 +28,28 @@ public class Demo {
         Garage garage = InstanceParser.parseInstance("src/main/resources/instanca2.txt");
         IndividualFactory factory = IndividualFactory.getFactory(garage);
         GeneticManager manager = GeneticManager.getManager(factory,
-                1000, 3);
+                100, 3);
 
 
         List<IMutation> mutations = new ArrayList<>();
-        mutations.add(new ShuffleMutation(factory));
+//        mutations.add(new ShuffleMutation(factory));
         mutations.add(new SimpleMutation(factory, garage.getNumberOfParkingLanes()));
         mutations.add(new UniformMutation(factory, garage.getNumberOfParkingLanes()));
 
         List<ICrossover> crossovers = new ArrayList<>();
-        crossovers.add(new SinglePointCrossover(factory));
-        crossovers.add(new MultiPointCrossover(factory, 3));
+//        crossovers.add(new SinglePointCrossover(factory));
+        crossovers.add(new MultipleElementCrossover(factory, 1));
+        crossovers.add(new MultipleElementCrossover(factory, 2));
+        crossovers.add(new MultipleElementCrossover(factory, 3));
+        crossovers.add(new MultipleElementCrossover(factory, 4));
+//        crossovers.add(new MultiPointCrossover(factory, 3));
 
         GeneticAlgorithm eliminationGeneticAlgorithm = new EliminationGeneticAlgorithm(manager,
                 new TournamentSelection(3), mutations, crossovers, 10_000_000,
                 60000, 0.05
         );
 
-        eliminationGeneticAlgorithm.search();
+        IIndividual result = eliminationGeneticAlgorithm.search();
 
 
 //        GreedyParkingAlgorithm parkingAlgorithm = new GreedyParkingAlgorithm(garage);
@@ -67,6 +74,6 @@ public class Demo {
 //        }
 //        System.out.println("TABOO VALID: " + validatorResult.isValid());
 //
-//        GarageOutputWriter.printGarageToFile("src/main/resources/output3.txt", garage);
+//        GarageOutputWriter.printGarageToFile("src/main/resources/output" + INSTANCE + ".txt", garage);
     }
 }

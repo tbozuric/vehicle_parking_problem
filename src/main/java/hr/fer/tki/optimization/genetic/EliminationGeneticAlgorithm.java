@@ -37,7 +37,7 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
                 System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
             }
             Garage garage = ((ParkingIndividual) population.get(bestIndex)).getGarage();
-            if (iteration >= numberOfEvaluations || garage.getNumberOfVehicles() == garage.getParkingSchedule().getNumberOfParkedVehicles()) {
+            if (iteration >= numberOfEvaluations || GarageValidator.validate(garage).isValid()) {
                 System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
                 localSearch(population, bestIndex);
                 return population.get(bestIndex);
@@ -92,7 +92,6 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
         for (String restriction : validatorResult.getViolatedRestrictions()) {
             System.out.println(restriction);
         }
-
     }
 
     private int indexOfMaxElement(List<Double> fitness) {

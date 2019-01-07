@@ -62,7 +62,12 @@ public class ParkingSchedule {
                 new HashMap<>(vehicleSeriesAtLanes));
     }
 
-    public boolean parkVehicle(Vehicle vehicle, ParkingLane parkingLane) {
+    public boolean parkVehicle(Vehicle vehicle, ParkingLane parkingLane, boolean ignoreRestrictions) {
+        if (ignoreRestrictions) {
+            addVehicleToLane(vehicle, parkingLane);
+            return true;
+        }
+
         int lengthOfVehicle = vehicle.getLengthOfVehicle();
         List<Vehicle> parkedVehicles = getVehiclesAt(parkingLane);
 
