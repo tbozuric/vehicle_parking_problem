@@ -12,7 +12,6 @@ public class ParkingIndividual implements IIndividual {
 
 
     private List<Integer> values;
-    //TODO: moyda promijeniti da svaka jedinka ima instancu na raspored ne garazu...
     private Garage garage;
 
     public ParkingIndividual(List<Integer> values, Garage garage) {
@@ -28,8 +27,6 @@ public class ParkingIndividual implements IIndividual {
 
     @Override
     public double calculateFitness() {
-//        double fitness;
-//
         ParkingSchedule parkingSchedule = garage.getParkingSchedule();
         int indexOfVehicle = 0;
 
@@ -43,12 +40,6 @@ public class ParkingIndividual implements IIndividual {
         }
 
         ValidatorResult result = GarageValidator.validate(garage);
-//        int numberOfPossibleViolations = GarageValidator.getNumberOfPossibleViolations();
-//        int numberOfViolatedRestrictions = result.getViolatedRestrictions().size();
-//        int award = (numberOfPossibleViolations - numberOfViolatedRestrictions) * 2;
-//
-//        GoalFunctionEvaluator evaluator = new GoalFunctionEvaluator(garage);
-//        fitness = award + evaluator.evaluateMaximizationProblem() - evaluator.evaluateMinimizationProblem();
         return 1.0 / (1 + result.getViolationPunishment());
     }
 

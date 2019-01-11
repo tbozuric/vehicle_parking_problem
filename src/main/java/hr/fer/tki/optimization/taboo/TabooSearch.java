@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class TabooSearch extends AbstractOptimizationAlgorithm {
 
-    private static final int ITERATION_STOP_CONDITION = 500;
+    private static final int ITERATION_STOP_CONDITION = 100;
     private static final int TABOO_DURATION = 8;
     private static final boolean FIND_ONLY_NEIGHBOURS_WITH_SAME_SERIES = false;
 

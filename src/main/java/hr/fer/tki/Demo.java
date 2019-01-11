@@ -4,18 +4,16 @@ import hr.fer.tki.models.Garage;
 import hr.fer.tki.optimization.genetic.EliminationGeneticAlgorithm;
 import hr.fer.tki.optimization.genetic.GeneticAlgorithm;
 import hr.fer.tki.optimization.genetic.GeneticManager;
-import hr.fer.tki.optimization.genetic.crossover.MultiPointCrossover;
 import hr.fer.tki.optimization.genetic.crossover.MultipleElementCrossover;
-import hr.fer.tki.optimization.genetic.crossover.SingleElementCrossover;
-import hr.fer.tki.optimization.genetic.crossover.SinglePointCrossover;
 import hr.fer.tki.optimization.genetic.individual.IIndividual;
 import hr.fer.tki.optimization.genetic.individual.IndividualFactory;
-import hr.fer.tki.optimization.genetic.mutation.ShuffleMutation;
+import hr.fer.tki.optimization.genetic.individual.ParkingIndividual;
 import hr.fer.tki.optimization.genetic.mutation.SimpleMutation;
 import hr.fer.tki.optimization.genetic.mutation.UniformMutation;
 import hr.fer.tki.optimization.genetic.providers.ICrossover;
 import hr.fer.tki.optimization.genetic.providers.IMutation;
 import hr.fer.tki.optimization.genetic.selection.TournamentSelection;
+import hr.fer.tki.output.GarageOutputWriter;
 import hr.fer.tki.parser.InstanceParser;
 
 import java.io.FileNotFoundException;
@@ -24,27 +22,24 @@ import java.util.List;
 
 public class Demo {
 
-    public static void main(String[] args) throws FileNotFoundException {
-        Garage garage = InstanceParser.parseInstance("src/main/resources/instanca2.txt");
-        IndividualFactory factory = IndividualFactory.getFactory(garage);
-        GeneticManager manager = GeneticManager.getManager(factory,
-                100, 3);
+    private static final int INSTANCE = 3;
 
+    public static void main(String[] args) throws FileNotFoundException {
+        Garage garage = InstanceParser.parseInstance("src/main/resources/instanca" + INSTANCE + ".txt");
+        IndividualFactory factory = IndividualFactory.getFactory(garage);
+        GeneticManager manager = GeneticManager.getManager(factory, 30, 3);
 
         List<IMutation> mutations = new ArrayList<>();
-//        mutations.add(new ShuffleMutation(factory));
         mutations.add(new SimpleMutation(factory, garage.getNumberOfParkingLanes()));
         mutations.add(new UniformMutation(factory, garage.getNumberOfParkingLanes()));
 
         List<ICrossover> crossovers = new ArrayList<>();
-//        crossovers.add(new SinglePointCrossover(factory));
         crossovers.add(new MultipleElementCrossover(factory, 1));
         crossovers.add(new MultipleElementCrossover(factory, 2));
         crossovers.add(new MultipleElementCrossover(factory, 3));
         crossovers.add(new MultipleElementCrossover(factory, 4));
         crossovers.add(new MultipleElementCrossover(factory, 5));
         crossovers.add(new MultipleElementCrossover(factory, 6));
-//        crossovers.add(new MultiPointCrossover(factory, 3));
 
         GeneticAlgorithm eliminationGeneticAlgorithm = new EliminationGeneticAlgorithm(manager,
                 new TournamentSelection(3), mutations, crossovers, 10_000_000,
@@ -52,30 +47,8 @@ public class Demo {
         );
 
         IIndividual result = eliminationGeneticAlgorithm.search();
+        Garage resultGarage = ((ParkingIndividual) result).getGarage();
 
-
-//        GreedyParkingAlgorithm parkingAlgorithm = new GreedyParkingAlgorithm(garage);
-//        parkingAlgorithm.parkVehiclesInTheGarage();
-//
-//        ValidatorResult validatorResult = GarageValidator.validate(garage);
-//        for (String restriction : validatorResult.getViolatedRestrictions()) {
-//            System.out.println(restriction);
-//        }
-//        System.out.println("GREEDY VALID: " + validatorResult.isValid());
-//
-//
-//        GarageDrawer.drawGarage(garage);
-//
-//        TabooSearch tabooSearch = new TabooSearch(garage);
-//        tabooSearch.parkVehiclesInTheGarage();
-//        GarageDrawer.drawGarage(garage);
-//
-//        validatorResult = GarageValidator.validate(garage);
-//        for (String restriction : validatorResult.getViolatedRestrictions()) {
-//            System.out.println(restriction);
-//        }
-//        System.out.println("TABOO VALID: " + validatorResult.isValid());
-//
-//        GarageOutputWriter.printGarageToFile("src/main/resources/output" + INSTANCE + ".txt", garage);
+        GarageOutputWriter.printGarageToFile("src/main/resources/output" + INSTANCE + ".txt", resultGarage);
     }
 }
