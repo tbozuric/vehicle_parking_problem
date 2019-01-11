@@ -97,7 +97,7 @@ public class GarageValidator {
             List<Vehicle> parkedVehicles = parkingSchedule.getVehiclesAt(lane);
             int numberOfParked = parkedVehicles.size();
 
-            int parkedLength = parkedVehicles.stream().mapToInt(Vehicle::getLengthOfVehicle).sum();
+            double parkedLength = parkedVehicles.stream().mapToInt(Vehicle::getLengthOfVehicle).sum();
             if (numberOfParked > 0) {
                 parkedLength += (numberOfParked - 1) * 0.5;
             }

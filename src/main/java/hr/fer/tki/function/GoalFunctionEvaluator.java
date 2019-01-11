@@ -146,6 +146,6 @@ public class GoalFunctionEvaluator {
     }
 
     public double evaluateTotalProblem() {
-        return evaluateMaximizationProblem() / evaluateMinimizationProblem();
+        return evaluateMinimizationProblem() - evaluateMaximizationProblem();
     }
 }

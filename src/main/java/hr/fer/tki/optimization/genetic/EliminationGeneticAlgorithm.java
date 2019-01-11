@@ -33,7 +33,7 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
         while (iteration < numberOfEvaluations) {
             iteration++;
 
-            if (iteration % 100 == 0) {
+            if (iteration % 10000 == 0) {
                 System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
             }
             Garage garage = ((ParkingIndividual) population.get(bestIndex)).getGarage();

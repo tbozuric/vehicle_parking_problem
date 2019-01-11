@@ -27,7 +27,7 @@ public class Demo {
     public static void main(String[] args) throws FileNotFoundException {
         Garage garage = InstanceParser.parseInstance("src/main/resources/instanca" + INSTANCE + ".txt");
         IndividualFactory factory = IndividualFactory.getFactory(garage);
-        GeneticManager manager = GeneticManager.getManager(factory, 30, 3);
+        GeneticManager manager = GeneticManager.getManager(factory, 10, 3);
 
         List<IMutation> mutations = new ArrayList<>();
         mutations.add(new SimpleMutation(factory, garage.getNumberOfParkingLanes()));
@@ -43,7 +43,7 @@ public class Demo {
 
         GeneticAlgorithm eliminationGeneticAlgorithm = new EliminationGeneticAlgorithm(manager,
                 new TournamentSelection(3), mutations, crossovers, 10_000_000,
-                60000, 0.01
+                60000, 0.03
         );
 
         IIndividual result = eliminationGeneticAlgorithm.search();
