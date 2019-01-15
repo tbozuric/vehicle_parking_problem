@@ -14,15 +14,21 @@ public class ParkingSchedule {
     private Map<ParkingLane, Double> availableSpaceAtLanes;
     private Map<ParkingLane, Integer> vehicleSeriesAtLanes;
 
+
     public ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles) {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = new HashMap<>();
-        this.availableSpaceAtLanes = parkingLanes.stream().collect(Collectors.toMap(lane -> lane, ParkingLane::getLengthOfLane));
-        this.vehicleSeriesAtLanes = parkingLanes.stream().collect(Collectors.toMap(lane -> lane, lane -> VEHICLE_SERIES_NOT_DEFINED));
+        this.availableSpaceAtLanes = parkingLanes.stream()
+                .collect(Collectors.toMap(lane -> lane, ParkingLane::getLengthOfLane));
+        this.vehicleSeriesAtLanes = parkingLanes.stream()
+                .collect(Collectors.toMap(lane -> lane, lane -> VEHICLE_SERIES_NOT_DEFINED));
+
     }
 
-    private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane, List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes, Map<ParkingLane, Integer> vehicleSeriesAtLanes) {
+    private ParkingSchedule(List<ParkingLane> parkingLanes, List<Vehicle> vehicles, Map<ParkingLane,
+            List<Vehicle>> vehiclesAtLanes, Map<ParkingLane, Double> availableSpaceAtLanes, Map<ParkingLane,
+            Integer> vehicleSeriesAtLanes) {
         this.parkingLanes = parkingLanes;
         this.vehicles = vehicles;
         this.vehiclesAtLanes = vehiclesAtLanes;
@@ -56,8 +62,14 @@ public class ParkingSchedule {
                 new HashMap<>(vehicleSeriesAtLanes));
     }
 
-    public boolean parkVehicle(Vehicle vehicle, ParkingLane parkingLane) {
+    public boolean parkVehicle(Vehicle vehicle, ParkingLane parkingLane, boolean ignoreRestrictions) {
+        if (ignoreRestrictions) {
+            addVehicleToLane(vehicle, parkingLane);
+            return true;
+        }
+
         int lengthOfVehicle = vehicle.getLengthOfVehicle();
+        List<Vehicle> parkedVehicles = getVehiclesAt(parkingLane);
 
         List<ParkingLane> blockingParkingLanes = parkingLane.getBlockingParkingLanes();
         for (ParkingLane blockingLane : blockingParkingLanes) {
@@ -76,7 +88,6 @@ public class ParkingSchedule {
             return false;
         }
 
-        List<Vehicle> parkedVehicles = getVehiclesAt(parkingLane);
         int numberOfParkedVehicles = parkedVehicles.size();
         if (numberOfParkedVehicles >= 1) {
             if (availableSpace - lengthOfVehicle - DISTANCE_BETWEEN_VEHICLES < 0) {
@@ -93,11 +104,7 @@ public class ParkingSchedule {
     }
 
     public void addVehicleToLane(Vehicle vehicle, ParkingLane lane) {
-        List<Vehicle> vehicles = vehiclesAtLanes.get(lane);
-        if (vehicles == null) {
-            vehicles = new ArrayList<>();
-            vehiclesAtLanes.put(lane, vehicles);
-        }
+        List<Vehicle> vehicles = vehiclesAtLanes.computeIfAbsent(lane, k -> new ArrayList<>());
 
         double availableSpace = availableSpaceAtLanes.get(lane);
         if (vehicles.size() == 0) {
@@ -132,7 +139,7 @@ public class ParkingSchedule {
         return availableSpaceAtLanes.get(lane) <= DISTANCE_BETWEEN_VEHICLES;
     }
 
-    public int getSeriesOfParkedVeihclesAtLane(ParkingLane lane) {
+    public int getSeriesOfParkedVehiclesAtLane(ParkingLane lane) {
         return vehicleSeriesAtLanes.get(lane);
     }
 
@@ -150,5 +157,25 @@ public class ParkingSchedule {
             }
         }
         return position;
+    }
+
+    public List<Integer> getParkedVehiclesOnLanesAsArray() {
+        int[] parkedVehicles = new int[vehicles.size()];
+        for (Map.Entry<ParkingLane, List<Vehicle>> entry : vehiclesAtLanes.entrySet()) {
+            ParkingLane lane = entry.getKey();
+            List<Vehicle> vehicles = entry.getValue();
+            for (Vehicle vehicle : vehicles) {
+                parkedVehicles[vehicle.getId()] = lane.getId();
+            }
+        }
+        return Arrays.stream(parkedVehicles).boxed().collect(Collectors.toList());
+    }
+
+    public int getNumberOfParkedVehicles() {
+        int sum = 0;
+        for (List<Vehicle> vehicles : vehiclesAtLanes.values()) {
+            sum += vehicles.size();
+        }
+        return sum;
     }
 }

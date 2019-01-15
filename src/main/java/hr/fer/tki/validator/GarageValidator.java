@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.lang.Math.abs;
+
 public class GarageValidator {
 
     private ValidatorResult validatorResult;
@@ -52,13 +54,13 @@ public class GarageValidator {
         int actualVehiclesNumber = garage.getNumberOfVehicles();
 
         if (vehiclesCount < actualVehiclesNumber) {
-            validatorResult.addViolatedRestriction("Not all vehicles stored.");
+            validatorResult.addViolatedRestriction("Not all vehicles stored.", abs(vehiclesCount - actualVehiclesNumber));
         } else if (vehiclesCount > actualVehiclesNumber) {
-            validatorResult.addViolatedRestriction("Some vehicles are duplicated.");
+            validatorResult.addViolatedRestriction("Some vehicles are duplicated.", abs(vehiclesCount - actualVehiclesNumber));
         }
 
-        if (distinctVehicles.size() != actualVehiclesNumber) {
-            validatorResult.addViolatedRestriction("Some vehicles are duplicated.");
+        if (distinctVehicles.size() != vehiclesCount) {
+            validatorResult.addViolatedRestriction("Some vehicles are duplicated.", abs(vehiclesCount - actualVehiclesNumber));
         }
     }
 
@@ -67,7 +69,7 @@ public class GarageValidator {
         parkingSchedule.getParkingLanes().forEach(lane -> {
             Object[] distinctSeries = parkingSchedule.getVehiclesAt(lane).stream().map(Vehicle::getSeriesOfVehicle).distinct().toArray();
             if (distinctSeries.length > 1) {
-                validatorResult.addViolatedRestriction("Lane contains vehicles of different series.");
+                validatorResult.addViolatedRestriction("Lane contains vehicles of different series.", 1);
             }
         });
     }
@@ -81,7 +83,7 @@ public class GarageValidator {
                 int vehicleIndex = parkingSchedule.getVehicles().indexOf(vehicle);
 
                 if (garage.getParkingPermissions()[vehicleIndex][laneIndex].equals(false)) {
-                    validatorResult.addViolatedRestriction(String.format("Wrong vehicles parked at lane %d.", vehicleIndex));
+                    validatorResult.addViolatedRestriction(String.format("Wrong vehicles parked at lane %d.", vehicleIndex), 1);
                 }
             }
         }
@@ -95,13 +97,14 @@ public class GarageValidator {
             List<Vehicle> parkedVehicles = parkingSchedule.getVehiclesAt(lane);
             int numberOfParked = parkedVehicles.size();
 
-            int parkedLength = parkedVehicles.stream().mapToInt(Vehicle::getLengthOfVehicle).sum();
+            double parkedLength = parkedVehicles.stream().mapToInt(Vehicle::getLengthOfVehicle).sum();
             if (numberOfParked > 0) {
                 parkedLength += (numberOfParked - 1) * 0.5;
             }
 
-            if (parkedLength > lane.getLengthOfLane()) {
-                validatorResult.addViolatedRestriction(String.format("Parking lane %d is overloaded.", laneIndex));
+            double lengthOfLane = lane.getLengthOfLane();
+            if (parkedLength > lengthOfLane) {
+                validatorResult.addViolatedRestriction(String.format("Parking lane %d is overloaded.", laneIndex), abs(lengthOfLane - parkedLength));
             }
         }
     }
@@ -117,7 +120,7 @@ public class GarageValidator {
                 int departureTime = vehicle.getDepartureTime();
 
                 if (time >= departureTime) {
-                    validatorResult.addViolatedRestriction(String.format("Departure time constraint broken in %d lane.", laneIndex));
+                    validatorResult.addViolatedRestriction(String.format("Departure time constraint broken in %d lane.", laneIndex), 1);
                 }
                 time = departureTime;
             }
@@ -143,7 +146,7 @@ public class GarageValidator {
                 Vehicle lastInBlocking = vehiclesInBlockingLanes.get(vehiclesInBlockingLanes.size() - 1);
                 if (lastInBlocking.getDepartureTime() >= firstInThis.getDepartureTime()) {
                     validatorResult.addViolatedRestriction(
-                            String.format("Lane %d is blocked, but does not break the time rule.", laneIndex));
+                            String.format("Lane %d is blocked, but does not break the time rule.", laneIndex), 1);
                 }
             }
         }

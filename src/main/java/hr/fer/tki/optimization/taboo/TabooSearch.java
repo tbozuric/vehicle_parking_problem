@@ -10,14 +10,13 @@ import hr.fer.tki.validator.GarageValidator;
 import hr.fer.tki.validator.ValidatorResult;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TabooSearch extends AbstractOptimizationAlgorithm {
 
-    private static final int ITERATION_STOP_CONDITION = 500;
+    private static final int ITERATION_STOP_CONDITION = 100;
     private static final int TABOO_DURATION = 8;
     private static final boolean FIND_ONLY_NEIGHBOURS_WITH_SAME_SERIES = false;
 
@@ -123,7 +122,7 @@ public class TabooSearch extends AbstractOptimizationAlgorithm {
         if (FIND_ONLY_NEIGHBOURS_WITH_SAME_SERIES) {
             relevantLanes = currentSchedule.getParkingLanes()
                     .stream()
-                    .filter(lane -> currentSchedule.getSeriesOfParkedVeihclesAtLane(lane) == series)
+                    .filter(lane -> currentSchedule.getSeriesOfParkedVehiclesAtLane(lane) == series)
                     .collect(Collectors.toList());
         } else {
             relevantLanes = currentSchedule.getParkingLanes();

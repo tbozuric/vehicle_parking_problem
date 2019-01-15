@@ -22,6 +22,14 @@ public class Garage {
         this.parkingPermissions = parkingPermissions;
     }
 
+    public Garage(Garage another) {
+        this.numberOfParkingLanes = another.getNumberOfParkingLanes();
+        this.numberOfVehicles = another.getNumberOfVehicles();
+        ParkingSchedule parkingSchedule = another.getParkingSchedule();
+        this.parkingSchedule = parkingSchedule.deepcopy();
+        this.parkingPermissions = another.getParkingPermissions();
+    }
+
     public int getNumberOfParkingLanes() {
         return numberOfParkingLanes;
     }

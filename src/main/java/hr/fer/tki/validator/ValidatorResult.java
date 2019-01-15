@@ -7,9 +7,11 @@ public class ValidatorResult {
 
     private boolean isValid;
     private List<String> violatedRestrictions;
+    private double violationPunishment;
 
     public ValidatorResult() {
         isValid = true;
+        violationPunishment = 0;
         violatedRestrictions = new ArrayList<>();
     }
 
@@ -21,8 +23,13 @@ public class ValidatorResult {
         return violatedRestrictions;
     }
 
-    public void addViolatedRestriction(String description) {
+    public double getViolationPunishment() {
+        return violationPunishment;
+    }
+
+    public void addViolatedRestriction(String description, double violationPunishment) {
         isValid = false;
+        this.violationPunishment += violationPunishment;
         violatedRestrictions.add(description);
     }
 }
