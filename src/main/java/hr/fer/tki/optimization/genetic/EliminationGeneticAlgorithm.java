@@ -7,13 +7,15 @@ import hr.fer.tki.optimization.genetic.providers.ICrossover;
 import hr.fer.tki.optimization.genetic.providers.IMutation;
 import hr.fer.tki.optimization.genetic.providers.ISelection;
 import hr.fer.tki.optimization.taboo.TabooSearch;
+import hr.fer.tki.output.GarageOutputWriter;
 import hr.fer.tki.validator.GarageValidator;
-import hr.fer.tki.validator.ValidatorResult;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
+    private static int counter = 1;
 
     public EliminationGeneticAlgorithm(GeneticManager manager, ISelection selection,
                                        List<IMutation> mutations, List<ICrossover> crossovers,
@@ -26,21 +28,44 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
         int iteration = 0;
 
+        long startTime = System.currentTimeMillis();
+
         List<IIndividual> population = manager.getInitialPopulation();
         List<Double> fitness = manager.getFitnessOfPopulation(population);
         int bestIndex = indexOfMaxElement(fitness);
-
+        boolean oneMinute = false;
+        boolean fiveMinute = false;
         while (iteration < numberOfEvaluations) {
             iteration++;
 
-            if (iteration % 10000 == 0) {
+            if (iteration % 100000 == 0) {
                 System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
             }
             Garage garage = ((ParkingIndividual) population.get(bestIndex)).getGarage();
-            if (iteration >= numberOfEvaluations || GarageValidator.validate(garage).isValid()) {
-                System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
+
+            long dif = System.currentTimeMillis() - startTime;
+            oneMinute = isPrintTime(oneMinute, garage, dif, 65000, 70000);
+
+            dif = System.currentTimeMillis() - startTime;
+            fiveMinute = isPrintTime(fiveMinute, garage, dif, 300000, 305000);
+
+            if (iteration % 10_000_000 == 0) {
                 localSearch(population, bestIndex);
-                return population.get(bestIndex);
+                IIndividual newIndividual = new ParkingIndividual(garage.getParkingSchedule().getParkedVehiclesOnLanesAsArray(),
+                        garage);
+                population.set(bestIndex, newIndividual);
+                fitness.set(bestIndex, manager.calculateFitness(newIndividual));
+            }
+
+            if (GarageValidator.validate(garage).isValid()) {
+                //if(iteration%100_000 == 0)
+                //System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
+                //localSearch(population, bestIndex);
+                //return population.get(bestIndex);
+                if (iteration >= numberOfEvaluations) {
+                    localSearch(population, bestIndex);
+                    return population.get(bestIndex);
+                }
             }
 
 
@@ -84,14 +109,29 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
         return population.get(bestIndex);
     }
 
+    private boolean isPrintTime(boolean oneMinute,
+                                Garage garage, long dif, int min, int max) {
+        if (!oneMinute && dif >= min && dif <= max) {
+            oneMinute = true;
+            if (GarageValidator.validate(garage).isValid()) {
+                try {
+                    GarageOutputWriter.printGarageToFile("src/main/resources/output3_3" + counter++ +
+                            ".txt", garage);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("Nije valjano!");
+            }
+
+        }
+        return oneMinute;
+    }
+
     private void localSearch(List<IIndividual> population, int bestIndex) {
         Garage garage = ((ParkingIndividual) population.get(bestIndex)).getGarage();
         TabooSearch tabooSearch = new TabooSearch(garage);
         tabooSearch.parkVehiclesInTheGarage();
-        ValidatorResult validatorResult = GarageValidator.validate(garage);
-        for (String restriction : validatorResult.getViolatedRestrictions()) {
-            System.out.println(restriction);
-        }
     }
 
     private int indexOfMaxElement(List<Double> fitness) {
@@ -102,4 +142,5 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
         }
         return maxAt;
     }
+
 }

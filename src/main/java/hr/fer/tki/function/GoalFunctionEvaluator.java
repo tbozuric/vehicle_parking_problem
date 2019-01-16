@@ -5,6 +5,7 @@ import hr.fer.tki.models.ParkingLane;
 import hr.fer.tki.models.ParkingSchedule;
 import hr.fer.tki.models.Vehicle;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -22,6 +23,16 @@ public class GoalFunctionEvaluator {
     private Supplier<Integer> g1;
     private Supplier<Integer> g2;
     private Supplier<Integer> g3;
+
+    private double f1Total;
+    private double f2Total;
+    private double f3Total;
+
+    private double g1Total;
+    private double g2Total;
+    private double g3Total;
+
+
     private int numberOfEvaluations;
 
     private ParkingSchedule parkingSchedule;
@@ -41,13 +52,19 @@ public class GoalFunctionEvaluator {
         f1 = () -> {
             int output = 0;
             int size = parkingLanes.size();
-            for (int i = 0; i < size - 1; i++) {
-                int vehicleSeriesOfParkingLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(parkingLanes.get(i));
-                int vehicleSeriesOfOtherParkingLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(parkingLanes.get(i + 1));
-                if (vehicleSeriesOfParkingLane != -1 && vehicleSeriesOfOtherParkingLane != -1) {
-                    if (vehicleSeriesOfParkingLane != vehicleSeriesOfOtherParkingLane) {
-                        output += 1;
-                    }
+            List<Integer> values = new ArrayList<>(size);
+            for (ParkingLane parkingLane : parkingLanes) {
+                int vehicleSeriesOfParkingLane = parkingSchedule.getSeriesOfParkedVehiclesAtLane(parkingLane);
+                if (vehicleSeriesOfParkingLane != -1) {
+                    values.add(vehicleSeriesOfParkingLane);
+                }
+            }
+            int sizeOfValid = values.size();
+            for (int i = 0; i < sizeOfValid - 1; i++) {
+                int vehicleSeriesOfParkingLane = values.get(i);
+                int vehicleSeriesOfOtherParkingLane = values.get(i + 1);
+                if (vehicleSeriesOfParkingLane != vehicleSeriesOfOtherParkingLane) {
+                    output += 1;
                 }
             }
             return output;
@@ -82,23 +99,37 @@ public class GoalFunctionEvaluator {
         g2 = () -> {
             int size = parkingLanes.size();
             int sum = 0;
-            for (int i = 0; i < size - 1; i++) {
+            List<Integer> validValues = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
                 List<Vehicle> currentLaneParkedVehicles = parkingSchedule.getVehiclesAt(parkingLanes.get(i));
-                List<Vehicle> nextLaneParkedVehicles = parkingSchedule.getVehiclesAt(parkingLanes.get(i + 1));
+                if (currentLaneParkedVehicles.size() != 0) {
+                    validValues.add(i);
+                }
+            }
 
-                if (currentLaneParkedVehicles.size() != 0
-                        && nextLaneParkedVehicles.size() != 0) {
-                    if (currentLaneParkedVehicles.get(currentLaneParkedVehicles.size() - 1).getTypeOfSchedule() ==
-                            nextLaneParkedVehicles.get(0).getTypeOfSchedule()) {
-                        sum += 1;
-                    }
+            int validSize = validValues.size();
+
+            for (int i = 0; i < validSize - 1; i++) {
+                int indexCurrentLaneParkedVehicles = validValues.get(i);
+                int indexNextLaneParkedVehicles = validValues.get(i + 1);
+
+                List<Vehicle> currentLaneParkedVehicles = parkingSchedule.getVehiclesAt(parkingLanes.get(indexCurrentLaneParkedVehicles));
+                List<Vehicle> nextLaneParkedVehicles = parkingSchedule.getVehiclesAt(parkingLanes.get(indexNextLaneParkedVehicles));
+                if (currentLaneParkedVehicles.get(currentLaneParkedVehicles.size() - 1).getTypeOfSchedule() ==
+                        nextLaneParkedVehicles.get(0).getTypeOfSchedule()) {
+                    sum += 1;
                 }
             }
             return sum;
-        };
+        }
 
-        g3 = () -> {
+        ;
+
+        g3 = () ->
+
+        {
             int reward = 0;
+            numberOfEvaluations = 0;
             for (ParkingLane parkingLane : parkingLanes) {
                 List<Vehicle> parkedVehicles = parkingSchedule.getVehiclesAt(parkingLane);
                 int sizeOfParkedVehicles = parkedVehicles.size();
@@ -116,7 +147,9 @@ public class GoalFunctionEvaluator {
                 }
             }
             return reward;
-        };
+        }
+
+        ;
     }
 
 
@@ -124,28 +157,66 @@ public class GoalFunctionEvaluator {
 
         int numberOfParkingLanes = parkingLanes.size();
 
-        double p1 = pow(numberOfParkingLanes - 1, -1);
+        double p1 = pow((int) parkingLanes.stream()
+                .filter(parkingLane -> parkingSchedule.getVehiclesAt(parkingLane).size() != 0)
+                .count() - 1, -1);
         double p2 = pow(numberOfParkingLanes, -1);
         double p3 = pow(parkingLanes.stream().mapToDouble(ParkingLane::getLengthOfLane).sum() -
                 vehicles.stream().mapToInt(Vehicle::getLengthOfVehicle).sum(), -1);
 
-        return f1.get() * p1 + f2.get() * p2 + f3.get() * p3;
+
+        f1Total = f1.get() * p1;
+        f2Total = f2.get() * p2;
+        f3Total = f3.get() * p3;
+
+        return f1Total + f2Total + f3Total;
     }
 
 
     public double evaluateMaximizationProblem() {
-
-        double r1 = pow(vehicles.size() - parkingLanes.stream().filter(lane -> parkingSchedule.getVehiclesAt(lane).size() > 0).count(), -1);
-        double r2 = pow(parkingLanes.size() - 1, -1);
+        int numberOfUsedLanes = (int) parkingLanes.stream()
+                .filter(parkingLane -> parkingSchedule.getVehiclesAt(parkingLane).size() != 0)
+                .count();
+        double r1 = pow(vehicles.size() - numberOfUsedLanes, -1);
+        double r2 = pow(numberOfUsedLanes - 1, -1);
         double g3Value = g3.get();
         double r3 = pow(15 * numberOfEvaluations, -1);
 
-        double result = g1.get() * r1 + g2.get() * r2 + g3Value * r3;
-        numberOfEvaluations = 0;
-        return result;
+        g1Total = g1.get() * r1;
+        g2Total = g2.get() * r2;
+        g3Total = g3Value * r3;
+
+        return g1Total + g2Total + g3Total;
+
+        //return result;
     }
 
     public double evaluateTotalProblem() {
         return evaluateMinimizationProblem() - evaluateMaximizationProblem();
+    }
+
+
+    public double getF1Total() {
+        return f1Total;
+    }
+
+    public double getF2Total() {
+        return f2Total;
+    }
+
+    public double getF3Total() {
+        return f3Total;
+    }
+
+    public double getG1Total() {
+        return g1Total;
+    }
+
+    public double getG2Total() {
+        return g2Total;
+    }
+
+    public double getG3Total() {
+        return g3Total;
     }
 }

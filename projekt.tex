@@ -13,7 +13,17 @@
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{tabularx}
+\usepackage{graphicx}
 \usepackage{mathpazo} % Palatino font
+\usepackage[english]{babel}
+
+\addto\captionsenglish{% Replace "english" with the language you use
+  \renewcommand{\contentsname}%
+    {Sadržaj}%
+}
+
+\captionsetup[table]{name=Tablica}
+\addto\captionsenglish{\renewcommand{\figurename}{Slika.}}
 
 \begin{document}
 
@@ -90,6 +100,9 @@
 	
 \end{titlepage}
 
+\tableofcontents
+\newpage
+
 \section{Opis problema}
 U svrhu ovog projekta riješavan je problem parkiranja vozila u spremištima kompanije za javni prijevoz. Svako od vozila se smješta na prometne trake i pritom moramo imati na umu vrijeme polaska vozila iz spremišta, kako bi svako vozilo na vrijeme moglo izaći iz spremišta. Sam problem definira određena ograničenja koja je bilo potrebno zadovoljiti:
 \begin{description}
@@ -148,8 +161,8 @@ $g_3$ & suma nagrada i penala za vremenski razmak između polazaka, za sva susje
               
 \end{description}
 \section{Opis primijenjenog algoritma}
-U svrhu rješavanja ovog projekta korištena su tri algoritma. Pohlepni algoritam, eliminacijski genetski algoritam s turnirskom selekcijom, te taboo pretraživanje u svrhu lokalnog pretraživanje nakon pronađenog rješenja koje zadovoljava gore navedena ograničenja. Na početku pomoću pohlepnog algoritma opisanog u idućem odjeljku pokušavamo razmjestiti što je više moguće vozila u trake, zatim na temleju tako dobivenog rješenja pomoću genetskog algoritma gradimo populaciju jedinku jednostavnim permutacijama, te nakon što genetskim algortmom nađemo rješenje koje zadovoljava sva ograničenja, taboo pretraživanjem lokalno pretražujemo za još bolja rješenja. Korišten je genetski eliminacijski algoritam, kao prikaz rješenja koristi se vektor permutacija cijelih nenegativnih brojeva koji označavaju parkirnu traku na koje je pojedino vozilo parkirano. Primjerice moramo li parkirati 50 vozila u spremište javnog prijevoznika, taj vektor ima 50 elemenata i svaki elemenet onačava na kojoj traci je parkirano vozilo koje je označeno indeksom u vektoru. Kao selekcija koristi se jednostavna 3-turnirska selekcija gdje se najgora jedinka eliminira iz populacije, a preostale dvije se križaju te se naposljetku dijete mutira i dodaje u populaciju. Odabrana je 3-turnirska selekcija jer se pokazala da se dobro ponaša tijekom postupka traženja rješenja i omjer preživljavanja dobrih i loših jedinki je zadovoljavjuć. Kao metode križanja implementirane su: križanje s jednom točkom prekida, križanje s više točaka prekida, te  višesturko križanje kojem preko parametra predamo željeni broj elemenata, i na temelju tog broja nasumično generiramo indekse i prilikom kreiranja nove jednike na tim indeksima uzimamo vrijednosti od drugog roditelja, dok na preostalim indeksima elemente prvog roditelja. Za mutaciju se koristi jednostavna mutacija gdje s vjerojatnosšću mutacije jedinke $p_m$ biramo nasumično element jedinke, i mijenjamo ga nekim drugom elementom, odnosno nekom drugom parkirnom trakom. Dodatno, implementirana je i metoda unifomrne mutacije, gdje iteriramo po svim elementima jedinke i s određenom vjerojatnošću uzimamo element prvog roditelja ili uzimamo element drugog roditelja. U samome radu koriste se obje vrste mutacije i svaku biramo s vjerojatnošću $0.5$. Ekvivalentno, za križanje koristimo višestruko križanje s različitim brojem elemenata koje želimo nasljediti od drugog roditelja. 
-Kad genetski algoritam naše validno rješenje, on ga predaje taboo algoritmu, koji ga koristi kao početno rješenje. Početno rješenje postavljamo kao najbolje i kao trenutno rješnje. Za trenutno rješenje generiramo susjedstvo, na način da radimo permutacije svakog vozila sa svakim. Dodatno, susjedstvno čine i rasporedi gdje premještamo vozila u prazne trake. U svakoj iteraciji evaluiramo sve tako generirane susjede i tražimo najboljeg poboljšavajućeg susjeda. Kad nađemo boljeg susjeda odabiremo njega kao trenutno rješenje i pamtimo tu izmjenu u taboo listu. Algoritam staje nakon određenog broja iteracija.
+U svrhu rješavanja ovog projekta korištena su tri algoritma. Pohlepni algoritam, eliminacijski genetski algoritam s turnirskom selekcijom, te taboo pretraživanje u svrhu lokalnog pretraživanje nakon pronađenog rješenja koje zadovoljava gore navedena ograničenja. Na početku pomoću pohlepnog algoritma opisanog u idućem odjeljku pokušavamo razmjestiti što je više moguće vozila u trake, zatim na temelju tako dobivenog rješenja pomoću genetskog algoritma gradimo populaciju jedinku jednostavnim permutacijama, te nakon što genetskim algortmom nađemo rješenje koje zadovoljava sva ograničenja,genetski algoritam počinje koristiti funkciju evaluacije koja dodatno optimira i dobrotu rješenja, te na kraju taboo pretraživanjem lokalno pretražujemo za još bolja rješenja. Korišten je genetski eliminacijski algoritam, kao prikaz rješenja koristi se vektor permutacija cijelih nenegativnih brojeva koji označavaju parkirnu traku na koje je pojedino vozilo parkirano. Primjerice moramo li parkirati 50 vozila u spremište javnog prijevoznika, taj vektor ima 50 elemenata i svaki elemenet onačava na kojoj traci je parkirano vozilo koje je označeno indeksom u vektoru. Kao selekcija koristi se jednostavna 3-turnirska selekcija gdje se najgora jedinka eliminira iz populacije, a preostale dvije se križaju te se naposljetku dijete mutira i dodaje u populaciju. Odabrana je 3-turnirska selekcija jer se pokazala da se dobro ponaša tijekom postupka traženja rješenja i omjer preživljavanja dobrih i loših jedinki je zadovoljavajuć. Kao metode križanja implementirane su: križanje s jednom točkom prekida, križanje s više točaka prekida, te  višesturko križanje kojem preko parametra predamo željeni broj elemenata, i na temelju tog broja nasumično generiramo indekse i prilikom kreiranja nove jednike na tim indeksima uzimamo vrijednosti od drugog roditelja, dok na preostalim indeksima elemente prvog roditelja. Za mutaciju se koristi jednostavna mutacija gdje s vjerojatnosšću mutacije jedinke $p_m$ biramo nasumično element jedinke, i mijenjamo ga nekim drugom elementom, odnosno nekom drugom parkirnom trakom. Dodatno, implementirana je i metoda unifomrne mutacije, gdje iteriramo po svim elementima jedinke i s određenom vjerojatnošću uzimamo element prvog roditelja ili uzimamo element drugog roditelja. U samome radu koriste se obje vrste mutacije i svaku biramo s vjerojatnošću $0.5$. Ekvivalentno, za križanje koristimo višestruko križanje s različitim brojem elemenata koje želimo nasljediti od drugog roditelja. 
+Kad genetski algoritam naše validno rješenje, nastoji mu optimirati dobrotu rješenja, odnosno maksimizirati omjer drugog i prvog cilja, te nakon toga najbolje pronađeno rjšenje predaje taboo algoritmu, koji ga koristi kao početno rješenje. Početno rješenje postavljamo kao najbolje i kao trenutno rješnje. Za trenutno rješenje generiramo susjedstvo, na način da radimo permutacije svakog vozila sa svakim. Dodatno, susjedstvno čine i rasporedi gdje premještamo vozila u prazne trake. U svakoj iteraciji evaluiramo sve tako generirane susjede i tražimo najboljeg poboljšavajućeg susjeda. Kad nađemo boljeg susjeda odabiremo njega kao trenutno rješenje i pamtimo tu izmjenu u taboo listu. Algoritam staje nakon određenog broja iteracija.
 Detalji oko pojedinih heurističkih odosno evolucijskih  algoritama dani su u nastavku u tablicama. 
 
 \begin{center}
@@ -174,8 +187,10 @@ Detalji oko pojedinih heurističkih odosno evolucijskih  algoritama dani su u na
   \begin{tabular}{ | >{\columncolor[gray]{0.6}}c |c|}
     \hline
      Prikaz rješenja & vektor permutacija parkirnih traka \\ \hline
-     Funkcija cilja & suma svih pogrešaka koje dijele rješenje od validnog \\ \hline
-     Funkcija prikladnosti &  suma svih pogrešaka koje dijele rješenje od validnog\\ \hline
+     Funkcija cilja na početku & suma svih pogrešaka koje dijele rješenje od validnog \\ 
+               Nakon pronalska validnog rješenja & kao do tada + (maks.  - min. problem) \\ \hline
+     Funkcija prikladnosti na početku &  suma svih pogrešaka koje dijele rješenje od validnog\\ 
+     Nakon pronalaska validnog rješenja &  kao do tada + (maks.  - min. problem) \\ \hline
      Početno rješenje &  pohlepni algoritam i permutacije \\ \hline
      Selekcija &  3-turnirska selekcija\\ \hline
      Križanje &  uzimanje $n$ elemenata druge jedinke\\ \hline
@@ -186,6 +201,16 @@ Detalji oko pojedinih heurističkih odosno evolucijskih  algoritama dani su u na
 \end{tabular}
 \end{center}
 \newpage
+
+Najveći problem genetskom algoritmu predstavlja pronalaženje početnog rješenja koje zadovoljava sva ograničenja. Problem su ravne plohe u funkciji optimizacije koje predstavljaju broj zadovoljenih ograničenja (primjer jedne plohe crvenom bojom na grafu), i takve ravne plohe predstavljaju težak zadatak izvlačenja iz lokalnog optimuma te je zbog toga samom genetskom algoritmu potreban nešto veći broj iteracija za pronalazak početnog validnog rješenja, no kada pronađe početno validno rješenje (plavom bojom na grafu) i kada funkciji evaluacije dodajemo dobrotu pojedinog rješenja, algoritam efikasno pronalazi sve bolje i bolje jedinke, odnosno sve bolja i bolja rješenja.
+\begin{center}
+\begin{figure}
+  \includegraphics[width=\linewidth]{fjaOptimizacije.png}
+  \caption{Optimizacijska funkcija pronalaska rješenja koje ne krši zadana ograničenja }
+  \label{fig:optFun}
+\end{figure}
+
+\end{center}
 
 \section{Pseudokod}
 Pseudokod pohlepnog algoritma dan je u nastavku:

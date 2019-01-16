@@ -40,6 +40,13 @@ public class ParkingIndividual implements IIndividual {
         }
 
         ValidatorResult result = GarageValidator.validate(garage);
+
+        if(result.isValid()){
+            GoalFunctionEvaluator evaluator = new GoalFunctionEvaluator(garage);
+            return 1.0 / (1 + result.getViolationPunishment()) *100000 + (evaluator.evaluateMaximizationProblem() -
+            evaluator.evaluateMinimizationProblem());
+        }
+
         return 1.0 / (1 + result.getViolationPunishment());
     }
 

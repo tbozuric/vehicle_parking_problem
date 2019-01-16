@@ -42,13 +42,13 @@ public class Demo {
         crossovers.add(new MultipleElementCrossover(factory, 6));
 
         GeneticAlgorithm eliminationGeneticAlgorithm = new EliminationGeneticAlgorithm(manager,
-                new TournamentSelection(3), mutations, crossovers, 10_000_000,
+                new TournamentSelection(3), mutations, crossovers, 100_000_000,
                 60000, 0.03
         );
 
         IIndividual result = eliminationGeneticAlgorithm.search();
         Garage resultGarage = ((ParkingIndividual) result).getGarage();
 
-        GarageOutputWriter.printGarageToFile("src/main/resources/output" + INSTANCE + ".txt", resultGarage);
+        GarageOutputWriter.printGarageToFile("src/main/resources/output" + INSTANCE + "_3.txt", resultGarage);
     }
 }
