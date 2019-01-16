@@ -24,7 +24,7 @@ public class GarageDrawer {
             laneBuilder.append(String.format("id:%d,l:%d,time:%d", v.getId(), v.getLengthOfVehicle(), v.getDepartureTime()));
             laneBuilder.append("| ");
         }
-        for (ParkingLane l: lane.getBlockingParkingLanes()) {
+        for (ParkingLane l : lane.getBlockingParkingLanes()) {
             laneBuilder.append(String.format(" blocked by:%d", l.getId()));
         }
         laneBuilder.append(System.lineSeparator());

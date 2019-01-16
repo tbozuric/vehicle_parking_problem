@@ -87,16 +87,12 @@ public class GeneticManager {
         if (size > 1) {
             double[] probabilities = new double[size];
             probabilities[0] = 0.5 / size;
-            //najmanja vjerojanost je suffle mutacije jer je to nasumicno pretrazivanje
+            //najmanja vjerojanost je prve mutacije u listi
             double difference = (1 - 0.5) / (double) (size - 1);
 
             for (int i = 1; i < size; i++) {
                 probabilities[i] = (1.0 + difference) / (double) size;
             }
-//            double[] probabilities = new double[size];
-//            for (int i = 0; i < size; i++) {
-//                probabilities[i] = 1.0 / (double) size;
-//            }
 
             double cumulativeProbability = 0.0;
             for (int i = 0; i < size; i++) {

@@ -42,17 +42,6 @@ public class IndividualFactory implements IIndividualFactory {
             Collections.shuffle(values);
             population.add(new ParkingIndividual(values, new Garage(emptyGarage)));
         }
-
-//        for (int i = 0; i < sizeOfPopulation; i++) {
-//            PrimitiveIterator.OfInt iterator = ThreadLocalRandom.current()
-//                    .ints(numberOfParkingLanes, 0, numberOfParkingLanes)
-//                    .iterator();
-//            List<Integer> values = new ArrayList<>(numberOfParkingLanes);
-//            for (int j = 0; j < numberOfParkingLanes; j++) {
-//                values.add(iterator.nextInt());
-//            }
-//            population.add(new ParkingIndividual(values, new Garage(emptyGarage)));
-//        }
         return population;
     }
 

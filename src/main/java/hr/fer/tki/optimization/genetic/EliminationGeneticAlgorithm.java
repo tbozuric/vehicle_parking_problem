@@ -15,6 +15,10 @@ import java.util.List;
 
 public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
+    private static final int SECONDS_60_LIMIT = 65000;
+    private static final int SECONDS_70_LIMIT = 70000;
+    private static final int SECONDS_300_LIMIT = 300000;
+    private static final int SECONDS_305_LIMIT = 305000;
     private static int counter = 1;
 
     public EliminationGeneticAlgorithm(GeneticManager manager, ISelection selection,
@@ -33,8 +37,8 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
         List<IIndividual> population = manager.getInitialPopulation();
         List<Double> fitness = manager.getFitnessOfPopulation(population);
         int bestIndex = indexOfMaxElement(fitness);
-        boolean oneMinute = false;
-        boolean fiveMinute = false;
+        boolean oneMinutePrinted = false;
+        boolean fiveMinutePrinted = false;
         while (iteration < numberOfEvaluations) {
             iteration++;
 
@@ -44,10 +48,10 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
             Garage garage = ((ParkingIndividual) population.get(bestIndex)).getGarage();
 
             long dif = System.currentTimeMillis() - startTime;
-            oneMinute = isPrintTime(oneMinute, garage, dif, 65000, 70000);
+            oneMinutePrinted = isPrintTime(oneMinutePrinted, garage, dif, SECONDS_60_LIMIT, SECONDS_70_LIMIT);
 
             dif = System.currentTimeMillis() - startTime;
-            fiveMinute = isPrintTime(fiveMinute, garage, dif, 300000, 305000);
+            fiveMinutePrinted = isPrintTime(fiveMinutePrinted, garage, dif, SECONDS_300_LIMIT, SECONDS_305_LIMIT);
 
             if (iteration % 10_000_000 == 0) {
                 localSearch(population, bestIndex);
@@ -68,7 +72,6 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
                 }
             }
 
-
             int numberOfSelectedIndividuals = manager.getSelectionSize();
 
             List<IIndividual> selection = this.selection.select(numberOfSelectedIndividuals, fitness, population);
@@ -82,7 +85,6 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
                 int index = population.indexOf(worstIndividual);
 
-
                 double currentBestFitness = fitness.get(bestIndex);
 
                 if (index < bestIndex) {
@@ -94,7 +96,6 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
                 population.remove(index);
                 fitness.remove(index);
-
 
                 population.add(mutated);
                 fitness.add(fitnessOfMutatedIndividual);
@@ -109,13 +110,14 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
         return population.get(bestIndex);
     }
 
-    private boolean isPrintTime(boolean oneMinute,
+    private boolean isPrintTime(boolean alreadyPrinted,
                                 Garage garage, long dif, int min, int max) {
-        if (!oneMinute && dif >= min && dif <= max) {
-            oneMinute = true;
+        if (!alreadyPrinted && dif >= min && dif <= max) {
+            alreadyPrinted = true;
             if (GarageValidator.validate(garage).isValid()) {
                 try {
-                    GarageOutputWriter.printGarageToFile("src/main/resources/output3_3" + counter++ +
+                    GarageOutputWriter.printGarageToFile("src/main/resources/output3_3" + counter++
+                            +
                             ".txt", garage);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -125,7 +127,7 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
             }
 
         }
-        return oneMinute;
+        return alreadyPrinted;
     }
 
     private void localSearch(List<IIndividual> population, int bestIndex) {

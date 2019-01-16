@@ -7,7 +7,6 @@ import hr.fer.tki.util.IndicesGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MultipleElementCrossover extends AbstractCrossoverAlgorithm {
 
@@ -36,5 +35,6 @@ public class MultipleElementCrossover extends AbstractCrossoverAlgorithm {
                 newValues.add(secondParentValues.get(i));
             }
         }
-        return factory.createIndividual(newValues);}
+        return factory.createIndividual(newValues);
+    }
 }

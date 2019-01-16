@@ -167,7 +167,6 @@ Detalji oko pojedinih heurističkih odosno evolucijskih  algoritama dani su u na
 
 \begin{center}
 \centering
-\captionof{table}{Taboo pretraživanje} \label{tab:title} 
   \begin{tabular}{ | >{\columncolor[gray]{0.6}}c | c |}
     \hline
      Prikaz rješenja & mapa u kojoj za svaku traku imamo listu vozila \\ \hline
@@ -178,12 +177,13 @@ Detalji oko pojedinih heurističkih odosno evolucijskih  algoritama dani su u na
      Generiranje susjedstva &  sve permutacije vozila(uz popunjavanje praznih traka)\\ \hline
      Kriterij zaustavljanja & 50 iteracija \\ \hline
 \end{tabular}
+\captionof{table}{Taboo pretraživanje} \label{tab:title} 
 \end{center}
 
 
 \begin{center}
 \centering
-\captionof{table}{Genetski algoritam} \label{tab:title} 
+
   \begin{tabular}{ | >{\columncolor[gray]{0.6}}c |c|}
     \hline
      Prikaz rješenja & vektor permutacija parkirnih traka \\ \hline
@@ -199,6 +199,7 @@ Detalji oko pojedinih heurističkih odosno evolucijskih  algoritama dani su u na
      Veličina populacije &  10\\ \hline
      Kriterij zaustavljanja & vremensko ograničenje \\ \hline
 \end{tabular}
+\captionof{table}{Genetski algoritam} \label{tab:title} 
 \end{center}
 \newpage
 
@@ -230,22 +231,63 @@ Pseudokod genetskog eliminacijskog algoritma i taboo algoritma je klasični pris
 
 \section{Rezultati}
 Iz rezultata prikazanih u nastavku možemo vidjeti kako algoritam uspješno pronalazi rješenja te parkira vozila u garažu bez kršenja ograničenja. Zbog same probabilističke prirode genetskih algoritama, vrijeme pronalska rješenja varira u razumljivim intervalima. Rad genetskog algoritma isproban je na mnogo parametara se pokazalo da najbolja rješenja pronalazi za malu vjerojatnost mutacije (otprilike $1-3\%$). Također se pokazalo da za veće veličine populacije nismo dobili na kvaliteti rješenja, pa samim time zbog većeg broj operacija koje je potrebno izvesti kod veće populacije, korištena je manja populacija koja je davala rješenja jednake ili bolje kvalitete u kraćem vremenu. Bilo je potrebno dosta pripaziti na operatore križanja i mutacije zbog vrlo ograničenog problema, pa samim time je razumljivo da vjerojatnost mutacije se očekuje da bude malena (kao što je i uobičajeno), a da operatorom križanja ne izgubimo dobar genetski materijal od roditelja ili u drugoj krajnosti da nasumično pretražujemo. Također, zbog zadanih ograničenja genetskom algoritmu treba nešto više iteracija da evaluira k dobrim rješenjima, pa je bilo potrebno u svakom koraku pamtiti što je više prethodno izračunatih operacija kako nebi bespotrebno trošili procesorsko vrijeme. 
+
 \begin{center}
 \centering
-\captionof{table}{Rezultati} \label{tab:title} 
+
   \begin{tabular}{ | >{\columncolor[gray]{0.6}}c|c|c|c| }
     \hline
   	Broj minuta & nakon 1 minute & nakon 5 minuta & beskonačno \\ \hline
-  	$f_1$ & & & \\ \hline 
-  	$f_2$ & & & \\ \hline 
-  	$f_3$ & & & \\ \hline 
-  	$g_1$ & & & \\ \hline 
-  	$g_2$ & & & \\ \hline 
-  	$g_3$ & & & \\ \hline 
-  	$cilj_1$ & & & \\ \hline 
-  	$cilj_2$ & & & \\ \hline 
-  	$omjer$ & & & \\ \hline 
+  	$f_1$ & 0.25 & 0.25 & 0.25 \\ \hline 
+  	$f_2$ & 0.86206895 & 0.86206895 & 0.86206895 \\ \hline 
+  	$f_3$ &  0.3174716 & 0.30610797 & 0.30042616 \\ \hline 
+  	$g_1$ &  0.5833334 & 0.625 & 0.75 \\ \hline 
+  	$g_2$ & 0.7083334 & 0.7916667 &  0.9166667 \\ \hline 
+  	$g_3$ & 0.8 &  0.78933334 & 0.8933333 \\ \hline 
+  	$cilj_1$  & 1.4295405 & 1.4181769 &  1.412495\\ \hline 
+  	$cilj_2$ & 2.0916667 & 2.206 & 2.56 \\ \hline 
+  	$omjer$ & 1,463174356 & 1,555518215 & 1,812395796 \\ \hline 
 \end{tabular}
+\captionof{table}{Rezultati prve instance} \label{tab:title} 
+\end{center}
+
+
+\begin{center}
+\centering
+
+  \begin{tabular}{ | >{\columncolor[gray]{0.6}}c|c|c|c| }
+    \hline
+  	Broj minuta & nakon 1 minute & nakon 5 minuta & beskonačno \\ \hline
+  	$f_1$ & 0.3846154& 0.3846154 &  0.34615386 \\ \hline 
+  	$f_2$ &0.9310345 & 0.9310345 & 0.9310345 \\ \hline 
+  	$f_3$ &0.64624506 & 0.6284585 & 0.6185771 \\ \hline 
+  	$g_1$ & 0.61538464 &  0.7692308& 0.8846154 \\ \hline 
+  	$g_2$ & 0.5769231 & 0.7692308 &  0.7692308 \\ \hline 
+  	$g_3$ &  0.7820513& 0.82051283 & 0.8717949 \\ \hline 
+  	$cilj_1$  & 1.961895 & 1.9441084 &  1.8957654 \\ \hline 
+  	$cilj_2$ & 1.974359&  2.3589745 & 2.5256412 \\ \hline 
+  	$omjer$ & 1,006353041 & 1,213396588 & 1,332254086 \\ \hline 
+\end{tabular}
+\captionof{table}{Rezultati druge instance} \label{tab:title} 
+\end{center}
+
+
+\begin{center}
+\centering
+  \begin{tabular}{ | >{\columncolor[gray]{0.6}}c|c|c|c| }
+    \hline
+  	Broj minuta & nakon 1 minute & nakon 5 minuta & beskonačno \\ \hline
+  	$f_1$ & -& -& 0.4814815 \\ \hline 
+  	$f_2$ & -& -& 0.9655172 \\ \hline 
+  	$f_3$ & -& -& 0.82114625 \\ \hline 
+  	$g_1$ & -& -& 0.79999995 \\ \hline 
+  	$g_2$ & -& -&  0.8518519 \\ \hline 
+  	$g_3$ & -& -& 0.8666667 \\ \hline 
+  	$cilj_1$  & -& -&  2.268145\\ \hline 
+  	$cilj_2$ & -& -& 2.5185184 \\ \hline 
+  	$omjer$ & -& -& 1,110386858 \\ \hline 
+\end{tabular}
+\captionof{table}{Rezultati treće instance} \label{tab:title} 
 \end{center}
 
 
