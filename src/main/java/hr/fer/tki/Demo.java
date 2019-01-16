@@ -42,7 +42,7 @@ public class Demo {
         crossovers.add(new MultipleElementCrossover(factory, 6));
 
         GeneticAlgorithm eliminationGeneticAlgorithm = new EliminationGeneticAlgorithm(manager,
-                new TournamentSelection(3), mutations, crossovers, 100_000_000,
+                new TournamentSelection(3), mutations, crossovers, 20_000_000,
                 60000, 0.03
         );
 
