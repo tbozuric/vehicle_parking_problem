@@ -6,6 +6,6 @@ Project repository for [Heuristic Optimization Methods course](http://www.fer.un
 
 ## Description
 Main goal of this project is implementation of an algorithm for parking vehicles in the garage.
-Used heuristic algorithms: Taboo search, Genetic algortihm, Greedy search.
+Used heuristic algorithms: Taboo search, Genetic algorithm, Greedy search.
 
 * [Project documentation](https://github.com/tbozuric/HMO/blob/master/documentation/projekt.pdf)
