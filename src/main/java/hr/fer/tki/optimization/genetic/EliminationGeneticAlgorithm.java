@@ -15,12 +15,6 @@ import java.util.List;
 
 public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
-    private static final int SECONDS_60_LIMIT = 65000;
-    private static final int SECONDS_70_LIMIT = 70000;
-    private static final int SECONDS_300_LIMIT = 300000;
-    private static final int SECONDS_305_LIMIT = 305000;
-    private static int counter = 1;
-
     public EliminationGeneticAlgorithm(GeneticManager manager, ISelection selection,
                                        List<IMutation> mutations, List<ICrossover> crossovers,
                                        int numberOfEvaluations, double errorMinimum, double probabilityOfMutation) {
@@ -32,26 +26,18 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
         int iteration = 0;
 
-        long startTime = System.currentTimeMillis();
-
         List<IIndividual> population = manager.getInitialPopulation();
         List<Double> fitness = manager.getFitnessOfPopulation(population);
         int bestIndex = indexOfMaxElement(fitness);
-        boolean oneMinutePrinted = false;
-        boolean fiveMinutePrinted = false;
+
         while (iteration < numberOfEvaluations) {
             iteration++;
 
             if (iteration % 100000 == 0) {
                 System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
             }
+
             Garage garage = ((ParkingIndividual) population.get(bestIndex)).getGarage();
-
-            long dif = System.currentTimeMillis() - startTime;
-            oneMinutePrinted = isPrintTime(oneMinutePrinted, garage, dif, SECONDS_60_LIMIT, SECONDS_70_LIMIT);
-
-            dif = System.currentTimeMillis() - startTime;
-            fiveMinutePrinted = isPrintTime(fiveMinutePrinted, garage, dif, SECONDS_300_LIMIT, SECONDS_305_LIMIT);
 
             if (iteration % 10_000_000 == 0) {
                 localSearch(population, bestIndex);
@@ -62,14 +48,13 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
             }
 
             if (GarageValidator.validate(garage).isValid()) {
-                //if(iteration%100_000 == 0)
-                //System.out.println("Iteration : " + iteration + ", Best individual: " + fitness.get(bestIndex));
-                //localSearch(population, bestIndex);
-                //return population.get(bestIndex);
-                if (iteration >= numberOfEvaluations) {
-                    localSearch(population, bestIndex);
-                    return population.get(bestIndex);
-                }
+                localSearch(population, bestIndex);
+                return population.get(bestIndex);
+
+                //if (iteration >= numberOfEvaluations) {
+                //    localSearch(population, bestIndex);
+                //    return population.get(bestIndex);
+                //}
             }
 
             int numberOfSelectedIndividuals = manager.getSelectionSize();
@@ -108,26 +93,6 @@ public class EliminationGeneticAlgorithm extends GeneticAlgorithm {
 
         }
         return population.get(bestIndex);
-    }
-
-    private boolean isPrintTime(boolean alreadyPrinted,
-                                Garage garage, long dif, int min, int max) {
-        if (!alreadyPrinted && dif >= min && dif <= max) {
-            alreadyPrinted = true;
-            if (GarageValidator.validate(garage).isValid()) {
-                try {
-                    GarageOutputWriter.printGarageToFile("src/main/resources/output3_3" + counter++
-                            +
-                            ".txt", garage);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                System.out.println("Nije valjano!");
-            }
-
-        }
-        return alreadyPrinted;
     }
 
     private void localSearch(List<IIndividual> population, int bestIndex) {

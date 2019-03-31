@@ -17,6 +17,7 @@ public class GoalFunctionEvaluator {
 
     private static final int UPPER_TIME_INTERVAL_LIMIT = 20;
     private static final int LOWER_TIME_INTERVAL_LIMIT = 10;
+
     private Supplier<Integer> f1;
     private Supplier<Integer> f2;
     private Supplier<Double> f3;
@@ -188,7 +189,6 @@ public class GoalFunctionEvaluator {
 
         return g1Total + g2Total + g3Total;
 
-        //return result;
     }
 
     public double evaluateTotalProblem() {

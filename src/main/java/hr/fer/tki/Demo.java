@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Demo {
 
-    private static final int INSTANCE = 3;
+    private static final int INSTANCE = 4;
 
     public static void main(String[] args) throws FileNotFoundException {
         Garage garage = InstanceParser.parseInstance("src/main/resources/instanca" + INSTANCE + ".txt");
@@ -49,6 +49,6 @@ public class Demo {
         IIndividual result = eliminationGeneticAlgorithm.search();
         Garage resultGarage = ((ParkingIndividual) result).getGarage();
 
-        GarageOutputWriter.printGarageToFile("src/main/resources/output" + INSTANCE + "_3.txt", resultGarage);
+        GarageOutputWriter.printGarageToFile("src/main/resources/output" + INSTANCE + "_4_10.txt", resultGarage);
     }
 }
